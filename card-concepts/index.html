@@ -1209,6 +1209,37 @@
       if (event.key === "ArrowRight") { event.preventDefault(); moveFlow(1); }
     });
 
+    // Keep section jumps inside the artifact's own scrolling document. Muse
+    // Preview hosts the page in a sandboxed webview, where fragment navigation
+    // and smooth scroll requests can be swallowed intermittently.
+    function jumpToSection(targetId) {
+      const target = document.getElementById(targetId);
+      if (!target) return false;
+      const scrollRoot = document.scrollingElement || document.documentElement;
+      const targetTop = Math.max(0, Math.round(target.getBoundingClientRect().top + scrollRoot.scrollTop - 8));
+
+      // Let the browser's focus algorithm initiate the jump first. That path
+      // still works in Preview builds where script-driven scrolling is ignored.
+      if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+      target.focus({ preventScroll: false });
+
+      // Then set every standards/legacy scroll surface so the same helper also
+      // holds in GitHub Pages and older mobile webviews.
+      scrollRoot.scrollTop = targetTop;
+      document.documentElement.scrollTop = targetTop;
+      window.scrollTo(0, targetTop);
+
+      // Verify after the current event/layout pass. If the host deferred the
+      // scroll, retry through both native target scrolling and focus.
+      window.requestAnimationFrame(() => {
+        if (Math.abs(target.getBoundingClientRect().top - 8) > 24) {
+          target.scrollIntoView({ behavior: "auto", block: "start" });
+          target.focus({ preventScroll: false });
+        }
+      });
+      return true;
+    }
+
     const navMenuTrigger = document.getElementById("nav-menu-trigger");
     const navMenu = document.getElementById("nav-menu");
     navMenuTrigger.addEventListener("click", () => {
@@ -1286,7 +1317,7 @@
         button.addEventListener("click", () => {
           swapIndex = Number(button.dataset.focusCard);
           renderSwap();
-          document.getElementById("card-swap").scrollIntoView({ behavior: "smooth", block: "start" });
+          jumpToSection("card-swap");
         });
       });
     }
@@ -1403,7 +1434,7 @@
     gooeyMenu.addEventListener("click", (event) => {
       const button = event.target.closest("[data-jump]");
       if (!button) return;
-      document.getElementById(button.dataset.jump).scrollIntoView({ behavior: "smooth", block: "start" });
+      jumpToSection(button.dataset.jump);
       gooeyMenu.hidden = true;
       gooeyTrigger.setAttribute("aria-expanded", "false");
       gooeyTrigger.textContent = "＋";
@@ -1477,19 +1508,20 @@
     }
     addInertiaGallery(flowStage);
 
-    // Muse Preview renders the page inside a sandboxed webview where native
-    // fragment navigation is not always forwarded to the iframe's scroller.
-    // Handle in-page links directly while keeping real hrefs for GitHub Pages.
-    document.querySelectorAll('a[href^="#"]').forEach((link) => {
-      link.addEventListener("click", (event) => {
-        const targetId = link.getAttribute("href").slice(1);
-        const target = document.getElementById(targetId);
-        if (!target) return;
-        event.preventDefault();
-        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        target.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
-      });
-    });
+    // Delegate every current and future in-page link through the same reliable
+    // jump path. Capture phase prevents the Preview host from consuming a
+    // fragment click before this document can handle it.
+    document.addEventListener("click", (event) => {
+      const link = event.target.closest('a[href^="#"]');
+      if (!link) return;
+      const targetId = link.getAttribute("href").slice(1);
+      if (!document.getElementById(targetId)) return;
+      event.preventDefault();
+      navMenu.hidden = true;
+      navMenuTrigger.setAttribute("aria-expanded", "false");
+      navMenuTrigger.querySelector("span:last-child").textContent = "＋";
+      jumpToSection(targetId);
+    }, true);
 
     let resizeTimer;
     window.addEventListener("resize", () => {
