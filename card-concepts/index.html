@@ -51,6 +51,7 @@
     }
 
     * { box-sizing: border-box; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
@@ -444,7 +445,10 @@
       transform-style: preserve-3d;
       user-select: none;
       touch-action: pan-y;
+      cursor: grab;
+      transition: transform .18s ease;
     }
+    .flow-stage.is-dragging { cursor: grabbing; transition: none; }
     .flow-card {
       position: absolute;
       left: 50%;
@@ -516,6 +520,227 @@
       text-decoration: none;
     }
     .back-top a:hover, .back-top a:focus-visible { color: var(--text); outline: none; text-decoration: underline; }
+
+    /* GodUI-inspired interaction studies, translated to framework-free HTML/CSS/JS. */
+    .section-nav { position: relative; align-self: end; }
+    .nav-menu-trigger { width: 100%; cursor: pointer; text-align: left; }
+    .nav-menu {
+      position: absolute;
+      z-index: 100;
+      right: 0;
+      top: calc(100% + 10px);
+      width: min(560px, 78vw);
+      padding: 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: 14px;
+      background: var(--surface-solid);
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+    .nav-menu[hidden] { display: none; }
+    .nav-menu a {
+      display: grid;
+      gap: 2px;
+      padding: 12px;
+      border-radius: 9px;
+      text-decoration: none;
+    }
+    .nav-menu a:hover, .nav-menu a:focus-visible { background: var(--surface-soft); outline: none; }
+    .nav-menu strong { font-size: .82rem; }
+    .nav-menu span { color: var(--faint); font-size: .7rem; }
+
+    .command-shell {
+      position: relative;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface-soft);
+    }
+    .filter-topline {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: start;
+    }
+    .tab-bar {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--bg-deep) 58%, transparent);
+    }
+    .tab-btn {
+      min-height: 38px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: .71rem;
+    }
+    .tab-btn[aria-selected="true"] { background: var(--control); color: var(--control-text); }
+    .tab-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .combo-wrap { position: relative; width: min(100%, 320px); }
+    .combo-input {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 42px 0 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      background: var(--surface-solid);
+      color: var(--text);
+      font: inherit;
+      font-size: .83rem;
+    }
+    .combo-input:focus { border-color: var(--text); outline: none; }
+    .combo-mark { position: absolute; top: 12px; right: 14px; color: var(--faint); pointer-events: none; }
+    .combo-list {
+      position: absolute;
+      z-index: 90;
+      top: calc(100% + 7px);
+      left: 0;
+      right: 0;
+      max-height: 250px;
+      padding: 6px;
+      border: 1px solid var(--line-strong);
+      border-radius: 11px;
+      background: var(--surface-solid);
+      box-shadow: var(--shadow-soft);
+      overflow-y: auto;
+    }
+    .combo-list[hidden] { display: none; }
+    .combo-option {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      padding: 10px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      font-size: .8rem;
+    }
+    .combo-option:hover, .combo-option:focus-visible { background: var(--surface-soft); outline: none; }
+    .combo-option span:last-child { color: var(--faint); font-family: "IBM Plex Mono", monospace; font-size: .68rem; }
+    .facet-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .facet-btn {
+      min-height: 34px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .74rem;
+    }
+    .facet-btn[aria-pressed="true"] { border-color: var(--accent); color: var(--text); background: color-mix(in srgb, var(--accent) 13%, transparent); }
+    .result-line { display: flex; justify-content: space-between; gap: 16px; margin: 18px 2px 12px; color: var(--faint); font-family: "IBM Plex Mono", monospace; font-size: .7rem; }
+    .result-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .result-card {
+      position: relative;
+      min-width: 0;
+      min-height: 168px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface-solid);
+    }
+    .result-card h3 { margin: 12px 34px 10px 0; font-size: 1rem; line-height: 1.25; letter-spacing: -.02em; }
+    .result-card p { margin: 0; color: var(--muted); font-size: .76rem; line-height: 1.5; }
+    .result-actions { position: absolute; top: 12px; right: 10px; }
+    .more-btn {
+      width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%; background: transparent;
+      color: var(--muted); font-size: 1.2rem; cursor: pointer;
+    }
+    .more-btn:hover, .more-btn:focus-visible { background: var(--surface-soft); color: var(--text); outline: none; }
+    .action-menu {
+      position: absolute; z-index: 50; top: 36px; right: 0; width: 175px; padding: 6px;
+      border: 1px solid var(--line-strong); border-radius: 10px; background: var(--surface-solid); box-shadow: var(--shadow-soft);
+    }
+    .action-menu[hidden] { display: none; }
+    .action-menu button, .action-menu a { display: block; width: 100%; padding: 9px 10px; border: 0; border-radius: 7px; background: transparent; color: var(--text); text-align: left; text-decoration: none; cursor: pointer; font-size: .75rem; }
+    .action-menu button:hover, .action-menu a:hover, .action-menu button:focus-visible, .action-menu a:focus-visible { background: var(--surface-soft); outline: none; }
+    .empty-result { grid-column: 1 / -1; padding: 34px; border-top: 1px solid var(--line); color: var(--muted); text-align: center; }
+
+    .accordion-list { border-top: 1px solid var(--line-strong); }
+    .accordion-item { border-bottom: 1px solid var(--line); }
+    .accordion-trigger {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 18px; align-items: center;
+      width: 100%; padding: 22px 4px; border: 0; background: transparent; color: var(--text); text-align: left; cursor: pointer;
+    }
+    .accordion-trigger strong { font-size: clamp(1.05rem, 2vw, 1.35rem); font-weight: 600; }
+    .accordion-trigger span { color: var(--faint); font-family: "IBM Plex Mono", monospace; font-size: .7rem; }
+    .accordion-trigger b { font-size: 1.2rem; font-weight: 400; transition: transform .25s ease; }
+    .accordion-trigger[aria-expanded="true"] b { transform: rotate(45deg); }
+    .accordion-panel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 0 0 20px; }
+    .accordion-panel[hidden] { display: none; }
+    .digest-card { padding: 15px; border-radius: 10px; background: var(--surface-soft); }
+    .digest-card h4 { margin: 8px 0 7px; font-size: .9rem; }
+    .digest-card p { margin: 0; color: var(--muted); font-size: .73rem; }
+
+    .queue-shell { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 30px; align-items: start; }
+    .queue-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .queue-item {
+      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center;
+      padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface-solid);
+    }
+    .queue-rank { color: var(--accent); font-family: "IBM Plex Mono", monospace; font-size: .75rem; }
+    .queue-item strong { display: block; margin-bottom: 2px; font-size: .9rem; }
+    .queue-item span { color: var(--faint); font-size: .72rem; }
+    .queue-movers { display: flex; gap: 5px; }
+    .queue-movers button { width: 34px; height: 34px; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--text); cursor: pointer; }
+    .queue-movers button:disabled { opacity: .28; cursor: default; }
+    .queue-note { padding: 20px; border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line); }
+    .queue-note h3 { margin: 0 0 10px; font-size: 1rem; }
+    .queue-note p { margin: 0; color: var(--muted); font-size: .8rem; }
+
+    .finish-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .finish-card { position: relative; min-height: 340px; padding: 28px; border-radius: 18px; overflow: hidden; }
+    .finish-card h3 { margin: 110px 0 10px; font-size: clamp(1.35rem, 3vw, 2rem); }
+    .finish-card p { margin: 0; max-width: 38ch; color: rgba(255,255,255,.76); }
+    .holo-card {
+      --px: 50%; --py: 50%;
+      background: linear-gradient(135deg, #202124, #3f3c32 45%, #1a1b1c);
+      border: 1px solid rgba(255,255,255,.19);
+      box-shadow: var(--shadow);
+      transform-style: preserve-3d;
+      transition: transform .12s ease;
+    }
+    .holo-card::before {
+      content: ""; position: absolute; inset: -35%; pointer-events: none; opacity: .72;
+      background: radial-gradient(circle at var(--px) var(--py), rgba(255,255,255,.72), rgba(210,168,74,.3) 12%, rgba(182,74,46,.16) 28%, transparent 48%);
+      mix-blend-mode: screen;
+    }
+    .foil-label { position: relative; color: rgba(255,255,255,.67); font-family: "IBM Plex Mono", monospace; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; }
+    .holo-card > * { position: relative; z-index: 1; }
+    .liquid-scene {
+      display: grid; place-items: center;
+      background: radial-gradient(circle at 20% 25%, #9a6b2a, transparent 24%), radial-gradient(circle at 78% 72%, #7b2f22, transparent 30%), #171719;
+    }
+    .liquid-card {
+      width: min(88%, 380px); min-height: 230px; padding: 26px; border: 1px solid rgba(255,255,255,.3); border-radius: 28px;
+      background: linear-gradient(135deg, rgba(255,255,255,.2), rgba(255,255,255,.06));
+      box-shadow: inset 0 1px rgba(255,255,255,.28), 0 22px 55px rgba(0,0,0,.38);
+      backdrop-filter: blur(18px) saturate(1.2);
+    }
+    .liquid-card h3 { margin-top: 52px; }
+    .finish-caption { margin-top: 14px; color: var(--faint); font-size: .75rem; }
+
+    .gooey-tools { position: fixed; z-index: 120; right: max(18px, env(safe-area-inset-right)); bottom: max(18px, env(safe-area-inset-bottom)); display: grid; justify-items: end; gap: 8px; }
+    .gooey-menu { display: grid; gap: 7px; justify-items: end; }
+    .gooey-menu[hidden] { display: none; }
+    .gooey-action, .gooey-trigger { border: 1px solid var(--line-strong); background: var(--surface-solid); color: var(--text); box-shadow: var(--shadow-soft); cursor: pointer; }
+    .gooey-action { min-height: 38px; padding: 0 13px; border-radius: 999px; font-size: .72rem; }
+    .gooey-trigger { width: 50px; height: 50px; border-radius: 50%; font-size: 1.18rem; }
+    .gooey-trigger[aria-expanded="true"] { background: var(--control); color: var(--control-text); }
 
     .help-dialog {
       width: min(620px, calc(100% - 28px));
@@ -611,6 +836,31 @@
       .keyboard-hint { display: none; }
     }
 
+    @media (max-width: 820px) {
+      .filter-topline, .queue-shell { grid-template-columns: 1fr; }
+      .combo-wrap { width: 100%; }
+      .result-grid, .accordion-panel { grid-template-columns: 1fr 1fr; }
+      .finish-grid { grid-template-columns: 1fr; }
+      .finish-card { min-height: 310px; }
+    }
+
+    @media (max-width: 560px) {
+      .nav-menu { position: fixed; left: 14px; right: 14px; top: 72px; width: auto; grid-template-columns: 1fr; max-height: calc(100vh - 96px); overflow-y: auto; }
+      .tab-bar { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+      .facet-row { flex-wrap: wrap; padding-bottom: 2px; }
+      .facet-btn { flex: 0 0 auto; }
+      .result-grid, .accordion-panel { grid-template-columns: 1fr; }
+      .command-shell { padding: 12px; }
+      .accordion-trigger { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+      .accordion-trigger span { grid-column: 1; }
+      .accordion-trigger b { grid-column: 2; grid-row: 1 / span 2; }
+      .queue-item { grid-template-columns: auto minmax(0, 1fr); }
+      .queue-movers { grid-column: 2; }
+      .finish-card { padding: 22px; border-radius: 14px; }
+      .finish-card h3 { margin-top: 92px; }
+      .gooey-tools { right: 14px; bottom: 14px; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
@@ -626,9 +876,16 @@
         <p class="lede">A separate test concept using the live review cards—not a replacement for the master board. Try the same set as a tactile stack or a spatial carousel.</p>
       </div>
       <nav class="section-nav" aria-label="Concept sections">
-        <a class="nav-link" href="#overview"><span>Start here</span><span aria-hidden="true">↓</span></a>
-        <a class="nav-link" href="#card-swap"><span>01 · Card Swap</span><span aria-hidden="true">↓</span></a>
-        <a class="nav-link" href="#cover-flow"><span>02 · Cover Flow</span><span aria-hidden="true">↓</span></a>
+        <button class="nav-link nav-menu-trigger" id="nav-menu-trigger" type="button" aria-expanded="false" aria-controls="nav-menu"><span>Explore experiments</span><span aria-hidden="true">＋</span></button>
+        <div class="nav-menu" id="nav-menu" hidden>
+          <a href="#overview"><strong>Start here</strong><span>How the board thinks</span></a>
+          <a href="#card-swap"><strong>Card Swap</strong><span>Focused triage</span></a>
+          <a href="#cover-flow"><strong>Cover Flow</strong><span>Spatial browsing</span></a>
+          <a href="#filter-lab"><strong>Filter Lab</strong><span>Faceted discovery</span></a>
+          <a href="#digest"><strong>Review Digest</strong><span>Accordion scan</span></a>
+          <a href="#priority-queue"><strong>Priority Queue</strong><span>Reorder shortlist</span></a>
+          <a href="#finish-lab"><strong>Finish Lab</strong><span>Light + depth</span></a>
+        </div>
       </nav>
     </header>
 
@@ -672,10 +929,10 @@
 
     <section class="concept" id="cover-flow" aria-labelledby="flow-title">
       <div class="section-heading">
-        <div><span class="section-index">02 / COVER FLOW</span><h2 id="flow-title">Browse by momentum.</h2></div>
-        <p class="section-copy">The active review faces forward; nearby cards stay visible as context. Select a side card, use the arrows, or navigate from the keyboard.</p>
+        <div><span class="section-index">02 / COVER FLOW + INERTIA</span><h2 id="flow-title">Browse by momentum.</h2></div>
+        <p class="section-copy">The active review faces forward; nearby cards stay visible as context. Drag and release to travel farther with a faster gesture, select a side card, or use the arrows.</p>
       </div>
-      <div class="section-use"><strong>Best use</strong><span>Comparison, rediscovery, and following a thread.</span><button class="learn-more help-trigger" type="button" data-help="flow">Why this layout works →</button></div>
+      <div class="section-use"><strong>Inspired by</strong><span>Cover Flow · Inertia Gallery</span><button class="learn-more help-trigger" type="button" data-help="flow">Why this layout works →</button></div>
       <div class="flow-shell" id="flow-shell" tabindex="0" aria-label="Cover Flow review carousel. Use left and right arrow keys.">
         <div class="flow-stage" id="flow-stage" aria-live="polite"></div>
         <div class="flow-controls">
@@ -687,8 +944,91 @@
       </div>
     </section>
 
+    <section class="concept" id="filter-lab" aria-labelledby="filter-title">
+      <div class="section-heading">
+        <div><span class="section-index">03 / FILTER LAB</span><h2 id="filter-title">Find the signal fast.</h2></div>
+        <p class="section-copy">A compact discovery layer combines verdict tabs, category facets, search, and per-card actions without turning the board into a dashboard.</p>
+      </div>
+      <div class="section-use"><strong>Inspired by</strong><span>Filter Bar · Multi-select Combobox · Tab Bar · Dropdown Menu</span></div>
+      <div class="command-shell">
+        <div class="filter-topline">
+          <div class="tab-bar" role="tablist" aria-label="Filter by verdict">
+            <button class="tab-btn" type="button" role="tab" aria-selected="true" data-verdict="all">All</button>
+            <button class="tab-btn" type="button" role="tab" aria-selected="false" data-verdict="try">Try</button>
+            <button class="tab-btn" type="button" role="tab" aria-selected="false" data-verdict="parked">Parked</button>
+            <button class="tab-btn" type="button" role="tab" aria-selected="false" data-verdict="skipped">Skipped</button>
+          </div>
+          <div class="combo-wrap">
+            <label class="sr-only" for="review-search">Search reviews</label>
+            <input class="combo-input" id="review-search" type="search" placeholder="Search reviews or projects…" autocomplete="off" aria-autocomplete="list" aria-controls="search-suggestions" />
+            <span class="combo-mark" aria-hidden="true">⌕</span>
+            <div class="combo-list" id="search-suggestions" role="listbox" hidden></div>
+          </div>
+        </div>
+        <div class="facet-row" id="facet-row" aria-label="Category filters"></div>
+        <div class="result-line"><span id="result-count">19 reviews</span><button class="text-button" id="clear-filters" type="button">Clear filters</button></div>
+        <div class="result-grid" id="result-grid"></div>
+      </div>
+    </section>
+
+    <section class="concept" id="digest" aria-labelledby="digest-title">
+      <div class="section-heading">
+        <div><span class="section-index">04 / REVIEW DIGEST</span><h2 id="digest-title">Compress the library, not the thinking.</h2></div>
+        <p class="section-copy">Categories become an expandable index. Open only the lane you care about; the top three reviews stay readable inside each group.</p>
+      </div>
+      <div class="section-use"><strong>Inspired by</strong><span>Accordion · Image Accordion, translated for text-first review data</span></div>
+      <div class="accordion-list" id="accordion-list"></div>
+    </section>
+
+    <section class="concept" id="priority-queue" aria-labelledby="queue-title">
+      <div class="section-heading">
+        <div><span class="section-index">05 / PRIORITY QUEUE</span><h2 id="queue-title">Put the next tests in order.</h2></div>
+        <p class="section-copy">A deliberate shortlist is more useful than another infinite feed. Move the strongest “Try” candidates up or down for this review pass.</p>
+      </div>
+      <div class="section-use"><strong>Inspired by</strong><span>Reorder List · tactile stack motion</span></div>
+      <div class="queue-shell">
+        <ol class="queue-list" id="queue-list"></ol>
+        <aside class="queue-note">
+          <h3>Ordering rule</h3>
+          <p>Rank by the next experiment worth running—not by star score alone. The order stays only for this open session.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="concept" id="finish-lab" aria-labelledby="finish-title">
+      <div class="section-heading">
+        <div><span class="section-index">06 / FINISH LAB</span><h2 id="finish-title">Depth with a job to do.</h2></div>
+        <p class="section-copy">Two expressive treatments are reserved for moments that deserve emphasis: a top recommendation and a compact active-state summary.</p>
+      </div>
+      <div class="section-use"><strong>Inspired by</strong><span>Holographic Card · Liquid Glass Card</span></div>
+      <div class="finish-grid">
+        <article class="finish-card holo-card" id="holo-card">
+          <span class="foil-label">Highest fit · 4.9 ★</span>
+          <h3>OpenDesign</h3>
+          <p>Use the reactive foil treatment only for a featured recommendation—not every review in the library.</p>
+        </article>
+        <div class="finish-card liquid-scene">
+          <article class="liquid-card">
+            <span class="foil-label">Active view</span>
+            <h3 id="liquid-title">All 19 reviews</h3>
+            <p id="liquid-copy">A glass summary can float over a rich surface while the underlying content remains legible.</p>
+          </article>
+        </div>
+      </div>
+      <p class="finish-caption">Pointer movement tilts the featured card. Reduced-motion settings disable the effect.</p>
+    </section>
+
     <div class="back-top"><a href="#top">Back to top ↑</a></div>
   </main>
+
+  <div class="gooey-tools" aria-label="Quick navigation">
+    <div class="gooey-menu" id="gooey-menu" hidden>
+      <button class="gooey-action" type="button" data-jump="filter-lab">Filter reviews</button>
+      <button class="gooey-action" type="button" data-jump="priority-queue">Open shortlist</button>
+      <button class="gooey-action" type="button" data-jump="top">Back to top</button>
+    </div>
+    <button class="gooey-trigger" id="gooey-trigger" type="button" aria-expanded="false" aria-controls="gooey-menu" aria-label="Open quick navigation">＋</button>
+  </div>
 
   <dialog class="help-dialog" id="help-dialog" aria-labelledby="dialog-title">
     <div class="dialog-head">
@@ -854,6 +1194,7 @@
       renderFlow();
     }
     flowStage.addEventListener("click", (event) => {
+      if (flowStage.dataset.dragged === "true") { flowStage.dataset.dragged = "false"; return; }
       if (event.target.closest(".open-link")) return;
       const card = event.target.closest(".flow-card");
       if (!card) return;
@@ -868,6 +1209,218 @@
       if (event.key === "ArrowRight") { event.preventDefault(); moveFlow(1); }
     });
 
+    const navMenuTrigger = document.getElementById("nav-menu-trigger");
+    const navMenu = document.getElementById("nav-menu");
+    navMenuTrigger.addEventListener("click", () => {
+      const open = navMenu.hidden;
+      navMenu.hidden = !open;
+      navMenuTrigger.setAttribute("aria-expanded", String(open));
+      navMenuTrigger.querySelector("span:last-child").textContent = open ? "−" : "＋";
+    });
+    navMenu.addEventListener("click", () => {
+      navMenu.hidden = true;
+      navMenuTrigger.setAttribute("aria-expanded", "false");
+      navMenuTrigger.querySelector("span:last-child").textContent = "＋";
+    });
+
+    const categories = [...new Set(reviews.map((item) => item.c))];
+    const activeCategories = new Set();
+    let activeVerdict = "all";
+    let searchTerm = "";
+    const facetRow = document.getElementById("facet-row");
+    const resultGrid = document.getElementById("result-grid");
+    const resultCount = document.getElementById("result-count");
+    const reviewSearch = document.getElementById("review-search");
+    const suggestions = document.getElementById("search-suggestions");
+
+    facetRow.innerHTML = categories.map((category) => `<button class="facet-btn" type="button" aria-pressed="false" data-category="${category}">${category}</button>`).join("");
+
+    function filteredReviews() {
+      return reviews.filter((item) => {
+        const verdictMatch = activeVerdict === "all" || item.v === activeVerdict;
+        const categoryMatch = activeCategories.size === 0 || activeCategories.has(item.c);
+        const haystack = `${item.t} ${item.c} ${item.p} ${item.w}`.toLowerCase();
+        return verdictMatch && categoryMatch && (!searchTerm || haystack.includes(searchTerm));
+      });
+    }
+
+    function closeActionMenus(except) {
+      document.querySelectorAll(".action-menu").forEach((menu) => { if (menu !== except) menu.hidden = true; });
+    }
+
+    function renderResults() {
+      const matches = filteredReviews();
+      resultCount.textContent = `${matches.length} ${matches.length === 1 ? "review" : "reviews"}`;
+      document.getElementById("liquid-title").textContent = activeVerdict === "all" ? `${matches.length} matching reviews` : `${matches.length} marked ${activeVerdict}`;
+      document.getElementById("liquid-copy").textContent = activeCategories.size ? `Filtered to ${[...activeCategories].join(", ")}.` : "No category filter is active.";
+      if (!matches.length) {
+        resultGrid.innerHTML = `<div class="empty-result">No reviews match that combination.</div>`;
+        return;
+      }
+      resultGrid.innerHTML = matches.slice(0, 9).map((item) => {
+        const index = reviews.indexOf(item);
+        return `<article class="result-card">
+          <span class="verdict ${item.v}">${item.v}</span>
+          <h3>${item.t}</h3>
+          <p>${item.c}${item.p ? ` · ${item.p}` : ""}</p>
+          <div class="result-actions">
+            <button class="more-btn" type="button" aria-label="Actions for ${item.t}" aria-expanded="false">•••</button>
+            <div class="action-menu" hidden>
+              <button type="button" data-focus-card="${index}">View in Card Swap</button>
+              <a href="${item.u}" target="_blank" rel="noopener noreferrer">Open source ↗</a>
+            </div>
+          </div>
+        </article>`;
+      }).join("") + (matches.length > 9 ? `<div class="empty-result">Showing the first 9 of ${matches.length}. Refine the filters to narrow the set.</div>` : "");
+      resultGrid.querySelectorAll(".more-btn").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const menu = button.nextElementSibling;
+          const opening = menu.hidden;
+          closeActionMenus(menu);
+          menu.hidden = !opening;
+          button.setAttribute("aria-expanded", String(opening));
+        });
+      });
+      resultGrid.querySelectorAll("[data-focus-card]").forEach((button) => {
+        button.addEventListener("click", () => {
+          swapIndex = Number(button.dataset.focusCard);
+          renderSwap();
+          document.getElementById("card-swap").scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+    }
+
+    document.querySelectorAll(".tab-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        activeVerdict = button.dataset.verdict;
+        document.querySelectorAll(".tab-btn").forEach((tab) => tab.setAttribute("aria-selected", String(tab === button)));
+        renderResults();
+      });
+    });
+    facetRow.addEventListener("click", (event) => {
+      const button = event.target.closest(".facet-btn");
+      if (!button) return;
+      const category = button.dataset.category;
+      activeCategories.has(category) ? activeCategories.delete(category) : activeCategories.add(category);
+      button.setAttribute("aria-pressed", String(activeCategories.has(category)));
+      renderResults();
+    });
+
+    function renderSuggestions() {
+      const term = reviewSearch.value.trim().toLowerCase();
+      if (!term) { suggestions.hidden = true; return; }
+      const matches = reviews.filter((item) => `${item.t} ${item.p}`.toLowerCase().includes(term)).slice(0, 6);
+      suggestions.innerHTML = matches.length ? matches.map((item) => `<button class="combo-option" type="button" role="option" data-value="${item.t}"><span>${item.t}</span><span>${item.c}</span></button>`).join("") : `<div class="combo-option"><span>No matching title</span></div>`;
+      suggestions.hidden = false;
+    }
+    reviewSearch.addEventListener("input", () => {
+      searchTerm = reviewSearch.value.trim().toLowerCase();
+      renderSuggestions();
+      renderResults();
+    });
+    reviewSearch.addEventListener("focus", renderSuggestions);
+    suggestions.addEventListener("click", (event) => {
+      const option = event.target.closest("[data-value]");
+      if (!option) return;
+      reviewSearch.value = option.dataset.value;
+      searchTerm = reviewSearch.value.toLowerCase();
+      suggestions.hidden = true;
+      renderResults();
+    });
+    document.getElementById("clear-filters").addEventListener("click", () => {
+      activeVerdict = "all";
+      searchTerm = "";
+      reviewSearch.value = "";
+      activeCategories.clear();
+      document.querySelectorAll(".tab-btn").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.verdict === "all")));
+      document.querySelectorAll(".facet-btn").forEach((button) => button.setAttribute("aria-pressed", "false"));
+      suggestions.hidden = true;
+      renderResults();
+    });
+
+    const grouped = categories.map((category) => ({ category, items: reviews.filter((item) => item.c === category).sort((a, b) => b.r - a.r) }));
+    const accordionList = document.getElementById("accordion-list");
+    accordionList.innerHTML = grouped.map((group, index) => `<div class="accordion-item">
+      <button class="accordion-trigger" type="button" aria-expanded="${index === 0}" aria-controls="accordion-${index}">
+        <strong>${group.category}</strong><span>${group.items.length} ${group.items.length === 1 ? "review" : "reviews"} · top ${group.items[0].r.toFixed(1)} ★</span><b aria-hidden="true">＋</b>
+      </button>
+      <div class="accordion-panel" id="accordion-${index}" ${index === 0 ? "" : "hidden"}>
+        ${group.items.slice(0, 3).map((item) => `<article class="digest-card"><span class="verdict ${item.v}">${item.v}</span><h4>${item.t}</h4><p>${item.w}</p></article>`).join("")}
+      </div>
+    </div>`).join("");
+    accordionList.addEventListener("click", (event) => {
+      const trigger = event.target.closest(".accordion-trigger");
+      if (!trigger) return;
+      const open = trigger.getAttribute("aria-expanded") !== "true";
+      trigger.setAttribute("aria-expanded", String(open));
+      document.getElementById(trigger.getAttribute("aria-controls")).hidden = !open;
+    });
+
+    let queueItems = reviews.filter((item) => item.v === "try").sort((a, b) => b.r - a.r);
+    const queueList = document.getElementById("queue-list");
+    function renderQueue() {
+      queueList.innerHTML = queueItems.map((item, index) => `<li class="queue-item">
+        <span class="queue-rank">${String(index + 1).padStart(2, "0")}</span>
+        <div><strong>${item.t}</strong><span>${item.c} · ${item.r.toFixed(1)} ★</span></div>
+        <div class="queue-movers">
+          <button type="button" data-move="up" data-index="${index}" aria-label="Move ${item.t} up" ${index === 0 ? "disabled" : ""}>↑</button>
+          <button type="button" data-move="down" data-index="${index}" aria-label="Move ${item.t} down" ${index === queueItems.length - 1 ? "disabled" : ""}>↓</button>
+        </div>
+      </li>`).join("");
+    }
+    queueList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-move]");
+      if (!button || button.disabled) return;
+      const from = Number(button.dataset.index);
+      const to = button.dataset.move === "up" ? from - 1 : from + 1;
+      [queueItems[from], queueItems[to]] = [queueItems[to], queueItems[from]];
+      renderQueue();
+      queueList.children[to].querySelector(`[data-move="${button.dataset.move}"]`).focus();
+    });
+
+    const holoCard = document.getElementById("holo-card");
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      holoCard.addEventListener("pointermove", (event) => {
+        const rect = holoCard.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 100;
+        const y = ((event.clientY - rect.top) / rect.height) * 100;
+        holoCard.style.setProperty("--px", `${x}%`);
+        holoCard.style.setProperty("--py", `${y}%`);
+        holoCard.style.transform = `perspective(900px) rotateX(${(50 - y) * .08}deg) rotateY(${(x - 50) * .08}deg)`;
+      });
+      holoCard.addEventListener("pointerleave", () => { holoCard.style.transform = ""; });
+    }
+
+    const gooeyTrigger = document.getElementById("gooey-trigger");
+    const gooeyMenu = document.getElementById("gooey-menu");
+    gooeyTrigger.addEventListener("click", () => {
+      const open = gooeyMenu.hidden;
+      gooeyMenu.hidden = !open;
+      gooeyTrigger.setAttribute("aria-expanded", String(open));
+      gooeyTrigger.textContent = open ? "×" : "＋";
+    });
+    gooeyMenu.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-jump]");
+      if (!button) return;
+      document.getElementById(button.dataset.jump).scrollIntoView({ behavior: "smooth", block: "start" });
+      gooeyMenu.hidden = true;
+      gooeyTrigger.setAttribute("aria-expanded", "false");
+      gooeyTrigger.textContent = "＋";
+    });
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".combo-wrap")) suggestions.hidden = true;
+      if (!event.target.closest(".result-actions")) closeActionMenus();
+      if (!event.target.closest(".section-nav")) {
+        navMenu.hidden = true;
+        navMenuTrigger.setAttribute("aria-expanded", "false");
+        navMenuTrigger.querySelector("span:last-child").textContent = "＋";
+      }
+    });
+
+    renderResults();
+    renderQueue();
+
     function addSwipe(element, onLeft, onRight) {
       let startX = 0;
       let startY = 0;
@@ -879,7 +1432,50 @@
       });
     }
     addSwipe(swapStage, () => moveSwap(1), () => moveSwap(-1));
-    addSwipe(flowStage, () => moveFlow(1), () => moveFlow(-1));
+
+    function addInertiaGallery(element) {
+      let startX = 0;
+      let startY = 0;
+      let startedAt = 0;
+      let dragging = false;
+      element.addEventListener("pointerdown", (event) => {
+        if (event.target.closest(".open-link")) return;
+        startX = event.clientX;
+        startY = event.clientY;
+        startedAt = performance.now();
+        dragging = true;
+        element.classList.add("is-dragging");
+        if (element.setPointerCapture) element.setPointerCapture(event.pointerId);
+      });
+      element.addEventListener("pointermove", (event) => {
+        if (!dragging) return;
+        const dx = event.clientX - startX;
+        const dy = event.clientY - startY;
+        if (Math.abs(dx) > Math.abs(dy)) element.style.transform = `translateX(${Math.max(-48, Math.min(48, dx * .18))}px)`;
+      });
+      element.addEventListener("pointerup", (event) => {
+        if (!dragging) return;
+        dragging = false;
+        element.classList.remove("is-dragging");
+        element.style.transform = "";
+        const dx = event.clientX - startX;
+        const dy = event.clientY - startY;
+        const elapsed = Math.max(80, performance.now() - startedAt);
+        if (Math.abs(dx) > 38 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+          const velocity = Math.abs(dx) / elapsed;
+          const steps = Math.max(1, Math.min(3, Math.round(Math.abs(dx) / 150 + velocity)));
+          flowStage.dataset.dragged = "true";
+          flowIndex = mod(flowIndex + (dx < 0 ? steps : -steps), reviews.length);
+          renderFlow();
+        }
+      });
+      element.addEventListener("pointercancel", () => {
+        dragging = false;
+        element.classList.remove("is-dragging");
+        element.style.transform = "";
+      });
+    }
+    addInertiaGallery(flowStage);
 
     // Muse Preview renders the page inside a sandboxed webview where native
     // fragment navigation is not always forwarded to the iframe's scroller.
