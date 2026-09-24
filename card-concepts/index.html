@@ -4,7 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light dark" />
-  <link rel="icon" href="data:," />
+  <link rel="icon" href="../brand/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="../brand/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="../brand/apple-touch-icon.png" />
+  <meta property="og:title" content="LinkLabz — Card Layout Concepts" />
+  <meta property="og:description" content="Tactile card-layout experiments over 19 live LinkLabz reviews: Card Swap, Cover Flow, Filter Lab, Priority Queue and more." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="../brand/og.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -632,7 +638,7 @@
     .combo-option span:last-child { color: var(--faint); font-family: "IBM Plex Mono", monospace; font-size: .68rem; }
     .facet-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
     .facet-btn {
-      min-height: 34px;
+      min-height: 36px;
       padding: 0 11px;
       border: 1px solid var(--line);
       border-radius: 999px;
@@ -657,7 +663,7 @@
     .result-card p { margin: 0; color: var(--muted); font-size: .76rem; line-height: 1.5; }
     .result-actions { position: absolute; top: 12px; right: 10px; }
     .more-btn {
-      width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%; background: transparent;
+      width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: transparent;
       color: var(--muted); font-size: 1.2rem; cursor: pointer;
     }
     .more-btn:hover, .more-btn:focus-visible { background: var(--surface-soft); color: var(--text); outline: none; }
@@ -689,7 +695,7 @@
     .queue-shell { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 30px; align-items: start; }
     .queue-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
     .queue-item {
-      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center;
+      display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; gap: 14px; align-items: center;
       padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface-solid);
     }
     .queue-rank { color: var(--accent); font-family: "IBM Plex Mono", monospace; font-size: .75rem; }
@@ -854,8 +860,8 @@
       .accordion-trigger { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
       .accordion-trigger span { grid-column: 1; }
       .accordion-trigger b { grid-column: 2; grid-row: 1 / span 2; }
-      .queue-item { grid-template-columns: auto minmax(0, 1fr); }
-      .queue-movers { grid-column: 2; }
+      .queue-item { grid-template-columns: auto auto minmax(0, 1fr); }
+      .queue-movers { grid-column: 3; }
       .finish-card { padding: 22px; border-radius: 14px; }
       .finish-card h3 { margin-top: 92px; }
       .gooey-tools { right: 14px; bottom: 14px; }
@@ -865,12 +871,172 @@
       html { scroll-behavior: auto; }
       *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
     }
+
+    /* ——— Harvest: GodUI keepers (facet counts + marks popover, project combobox,
+           card menu upgrade, drag reorder, workspace menu, stat pills, shared logo) ——— */
+    .brand-mark { display: inline-block; margin-bottom: 16px; }
+    .brand-mark img { display: block; height: 34px; width: auto; }
+
+    .stat-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 4px; }
+    .stat-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      min-height: 36px; padding: 0 13px;
+      border: 1px solid var(--line); border-radius: 999px;
+      background: transparent; color: var(--muted);
+      font-family: "IBM Plex Mono", monospace; font-size: .7rem; letter-spacing: .02em;
+      cursor: pointer;
+    }
+    .stat-pill:hover { color: var(--text); border-color: var(--line-strong); }
+    .stat-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .stat-pill b { color: var(--text); font-weight: 500; }
+    .stat-pill[aria-pressed="true"] {
+      border-color: var(--accent); color: var(--text);
+      background: color-mix(in srgb, var(--accent) 13%, transparent);
+    }
+
+    .marks-wrap { position: relative; display: inline-flex; align-items: center; gap: 6px; }
+    .marks-clear {
+      display: grid; place-items: center; width: 36px; height: 36px; padding: 0;
+      border: 1px solid var(--line); border-radius: 50%;
+      background: transparent; color: var(--muted); font-size: 1rem; line-height: 1; cursor: pointer;
+    }
+    .marks-clear[hidden] { display: none; }
+    .marks-clear:hover, .marks-clear:focus-visible { color: var(--text); border-color: var(--line-strong); outline: none; }
+    .marks-clear:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .marks-pop {
+      position: absolute; z-index: 90; top: calc(100% + 8px); left: 0;
+      min-width: 212px; padding: 8px;
+      border: 1px solid var(--line-strong); border-radius: 11px;
+      background: var(--surface-solid); box-shadow: var(--shadow-soft);
+    }
+    .marks-pop[hidden] { display: none; }
+    .mark-check {
+      display: flex; align-items: center; gap: 10px;
+      min-height: 40px; padding: 0 10px; border-radius: 8px;
+      font-size: .8rem; cursor: pointer;
+    }
+    .mark-check:hover { background: var(--surface-soft); }
+    .mark-check input { width: 17px; height: 17px; accent-color: var(--accent); }
+    .mark-count { margin-left: auto; color: var(--faint); font-family: "IBM Plex Mono", monospace; font-size: .68rem; }
+
+    .project-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; margin-top: 14px; }
+    .project-combo { position: relative; max-width: 340px; }
+    .proj-list { list-style: none; margin: 0; }
+    .proj-row { display: flex; align-items: center; gap: 4px; }
+    .proj-option {
+      flex: 1 1 auto; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      min-height: 40px; padding: 6px 10px; border: 0; border-radius: 7px;
+      background: transparent; color: var(--text); text-align: left; cursor: pointer; font-size: .8rem;
+    }
+    .proj-option:hover, .proj-option:focus-visible { background: var(--surface-soft); outline: none; }
+    .proj-option[aria-selected="true"] .proj-label { color: var(--accent); }
+    .proj-label mark { background: color-mix(in srgb, var(--accent) 38%, transparent); color: inherit; border-radius: 3px; padding: 0 1px; }
+    .proj-count { color: var(--faint); font-family: "IBM Plex Mono", monospace; font-size: .68rem; }
+    .proj-pin {
+      flex: 0 0 auto; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 7px;
+      background: transparent; font-size: .95rem; cursor: pointer; opacity: .38;
+    }
+    .proj-pin[aria-pressed="true"] { opacity: 1; }
+    .proj-pin:hover, .proj-pin:focus-visible { background: var(--surface-soft); opacity: 1; outline: none; }
+    .proj-pin:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .proj-empty { padding: 12px 10px; color: var(--faint); font-size: .78rem; }
+    .pin-toggle {
+      display: inline-flex; align-items: center; gap: 9px;
+      min-height: 36px; color: var(--muted); font-size: .76rem; cursor: pointer; white-space: nowrap;
+    }
+    .pin-toggle input { width: 17px; height: 17px; accent-color: var(--accent); }
+    .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .chip-row[hidden] { display: none; }
+    .proj-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      min-height: 32px; padding: 2px 4px 2px 12px;
+      border: 1px solid var(--line-strong); border-radius: 999px;
+      background: var(--surface-soft); font-size: .74rem;
+    }
+    .chip-x {
+      display: grid; place-items: center; width: 28px; height: 28px; padding: 0;
+      border: 0; border-radius: 50%; background: transparent; color: var(--muted);
+      font-size: 1rem; line-height: 1; cursor: pointer;
+    }
+    .chip-x:hover, .chip-x:focus-visible { background: var(--surface); color: var(--text); outline: none; }
+    .chip-x:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+    .action-menu { width: 198px; }
+    .action-sub > button { display: flex; justify-content: space-between; align-items: center; }
+    .action-submenu { padding: 2px 0 2px 10px; }
+    .action-submenu[hidden] { display: none; }
+    .action-submenu button[aria-checked="true"] { color: var(--accent); }
+
+    .queue-grip {
+      display: grid; place-items: center; width: 40px; height: 40px; padding: 0;
+      border: 1px solid var(--line); border-radius: 8px;
+      background: transparent; color: var(--faint); font-size: 1.05rem;
+      cursor: grab; touch-action: none;
+    }
+    .queue-grip:hover, .queue-grip:focus-visible { color: var(--text); border-color: var(--line-strong); outline: none; }
+    .queue-grip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .queue-grip:active { cursor: grabbing; }
+    .queue-item.is-dragging { opacity: .45; }
+    .queue-item.drop-before { box-shadow: 0 -3px 0 0 var(--accent); }
+    .queue-item.drop-after { box-shadow: 0 3px 0 0 var(--accent); }
+
+    .workspace-menu {
+      position: absolute; z-index: 110; right: 0; top: calc(100% + 10px);
+      width: min(400px, 82vw); padding: 10px;
+      border: 1px solid var(--line-strong); border-radius: 14px;
+      background: var(--surface-solid); box-shadow: var(--shadow);
+    }
+    .workspace-menu[hidden] { display: none; }
+    .ws-heading {
+      margin: 2px 4px 8px; color: var(--faint);
+      font-family: "IBM Plex Mono", monospace; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase;
+    }
+    .ws-item {
+      display: flex; gap: 12px; align-items: flex-start; width: 100%;
+      min-height: 52px; padding: 10px; border: 0; border-radius: 9px;
+      background: transparent; color: var(--text); text-align: left; cursor: pointer;
+    }
+    .ws-item:hover, .ws-item:focus-visible { background: var(--surface-soft); outline: none; }
+    .ws-item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .ws-ico {
+      flex: 0 0 auto; display: grid; place-items: center; width: 32px; height: 32px;
+      border: 1px solid var(--line); border-radius: 8px; color: var(--accent); font-size: 1rem;
+    }
+    .ws-text { display: grid; gap: 2px; }
+    .ws-text strong { font-size: .84rem; }
+    .ws-text span { color: var(--faint); font-size: .72rem; line-height: 1.45; }
+
+    .toast {
+      position: fixed; z-index: 400; left: 50%; bottom: 84px; transform: translateX(-50%);
+      max-width: min(420px, calc(100vw - 32px));
+      padding: 11px 18px; border: 1px solid var(--line-strong); border-radius: 999px;
+      background: var(--surface-solid); color: var(--text); box-shadow: var(--shadow-soft);
+      font-size: .8rem; opacity: 0; transition: opacity .2s ease; pointer-events: none;
+    }
+    .toast[hidden] { display: none; }
+    .toast.is-visible { opacity: 1; }
+
+    @media (max-width: 720px) {
+      .workspace-menu {
+        position: fixed; left: 0; right: 0; bottom: 0; top: auto; width: 100%;
+        border-radius: 18px 18px 0 0; border-bottom: 0; z-index: 300;
+        padding: 12px 14px max(18px, env(safe-area-inset-bottom));
+      }
+    }
+    @media (max-width: 560px) {
+      .project-row { grid-template-columns: 1fr; }
+      .project-combo { max-width: none; }
+    }
   </style>
 </head>
 <body>
   <main class="page" id="top">
     <header class="intro">
       <div>
+        <picture class="brand-mark">
+          <source srcset="../brand/wordmark-charcoal.svg" media="(prefers-color-scheme: light)" />
+          <img src="../brand/wordmark-light.svg" alt="LinkLabz" height="34" />
+        </picture>
         <p class="eyebrow">Layout study · 19 live reviews</p>
         <h1>LinkLabz — Card Layout Concepts</h1>
         <p class="lede">A separate test concept using the live review cards—not a replacement for the master board. Try the same set as a tactile stack or a spatial carousel.</p>
@@ -886,6 +1052,15 @@
           <a href="#priority-queue"><strong>Priority Queue</strong><span>Reorder shortlist</span></a>
           <a href="#finish-lab"><strong>Finish Lab</strong><span>Light + depth</span></a>
         </div>
+        <button class="nav-link" id="workspace-trigger" type="button" aria-expanded="false" aria-controls="workspace-menu"><span>Workspace</span><span aria-hidden="true">＋</span></button>
+        <div class="workspace-menu" id="workspace-menu" hidden role="menu" aria-label="Workspace">
+          <p class="ws-heading">Workspace</p>
+          <button class="ws-item" type="button" role="menuitem" data-ws="export"><span class="ws-ico" aria-hidden="true">↓</span><span class="ws-text"><strong>Download JSON</strong><span>Export reviews, queue order, promoted and favorites as a file.</span></span></button>
+          <button class="ws-item" type="button" role="menuitem" data-ws="import"><span class="ws-ico" aria-hidden="true">↑</span><span class="ws-text"><strong>Load JSON</strong><span>Replace the board from a workspace file and re-render.</span></span></button>
+          <button class="ws-item" type="button" role="menuitem" data-ws="reset"><span class="ws-ico" aria-hidden="true">↺</span><span class="ws-text"><strong>Reset to seed</strong><span>Restore the original 19 reviews and clear promoted and favorites.</span></span></button>
+          <button class="ws-item" type="button" role="menuitem" data-ws="clear"><span class="ws-ico" aria-hidden="true">⌀</span><span class="ws-text"><strong>Clear filters</strong><span>Drop verdict, category, project, marks and search filters.</span></span></button>
+        </div>
+        <input type="file" id="workspace-file" accept="application/json,.json" hidden />
       </nav>
     </header>
 
@@ -965,6 +1140,24 @@
             <div class="combo-list" id="search-suggestions" role="listbox" hidden></div>
           </div>
         </div>
+        <div class="project-row">
+          <div class="project-combo" id="project-combo">
+            <label class="sr-only" for="project-input">Filter by project</label>
+            <input class="combo-input" id="project-input" type="text" placeholder="Filter by project…" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="project-list" aria-autocomplete="list" />
+            <span class="combo-mark" aria-hidden="true">▾</span>
+            <ul class="combo-list proj-list" id="project-list" role="listbox" aria-multiselectable="true" aria-label="Projects" hidden></ul>
+          </div>
+          <label class="pin-toggle"><input type="checkbox" id="pin-top" /> <span>Pin projects to top</span></label>
+        </div>
+        <div class="chip-row" id="project-chips" aria-label="Selected projects" hidden></div>
+        <div class="stat-row" id="stat-row" role="group" aria-label="Review statistics">
+          <button class="stat-pill" type="button" data-stat-verdict="all" aria-pressed="true">Reviewed <b id="stat-reviewed">19</b></button>
+          <button class="stat-pill" type="button" data-stat-verdict="try" aria-pressed="false">Try <b id="stat-try">8</b></button>
+          <button class="stat-pill" type="button" data-stat-verdict="parked" aria-pressed="false">Parked <b id="stat-parked">9</b></button>
+          <button class="stat-pill" type="button" data-stat-verdict="skipped" aria-pressed="false">Skipped <b id="stat-skipped">2</b></button>
+          <button class="stat-pill" type="button" data-stat-mark="promoted" aria-pressed="false">Promoted <b id="stat-promoted">0</b></button>
+          <button class="stat-pill" type="button" data-stat-mark="favorites" aria-pressed="false">Favorites <b id="stat-favorites">0</b></button>
+        </div>
         <div class="facet-row" id="facet-row" aria-label="Category filters"></div>
         <div class="result-line"><span id="result-count">19 reviews</span><button class="text-button" id="clear-filters" type="button">Clear filters</button></div>
         <div class="result-grid" id="result-grid"></div>
@@ -990,7 +1183,7 @@
         <ol class="queue-list" id="queue-list"></ol>
         <aside class="queue-note">
           <h3>Ordering rule</h3>
-          <p>Rank by the next experiment worth running—not by star score alone. The order stays only for this open session.</p>
+          <p>Rank by the next experiment worth running—not by star score alone. Drag the grip to reorder — order is saved for this session.</p>
         </aside>
       </div>
     </section>
@@ -1020,6 +1213,8 @@
 
     <div class="back-top"><a href="#top">Back to top ↑</a></div>
   </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <div class="gooey-tools" aria-label="Quick navigation">
     <div class="gooey-menu" id="gooey-menu" hidden>
@@ -1117,10 +1312,19 @@
       </article>`;
     }
 
-    swapStage.innerHTML = reviews.map((item, index) => cardMarkup(item, index, "swap")).join("");
-    flowStage.innerHTML = reviews.map((item, index) => cardMarkup(item, index, "flow")).join("");
-    const swapCards = Array.from(swapStage.children);
-    const flowCards = Array.from(flowStage.children);
+    let swapCards = [];
+    let flowCards = [];
+    function buildDecks() {
+      swapStage.innerHTML = reviews.map((item, index) => cardMarkup(item, index, "swap")).join("");
+      flowStage.innerHTML = reviews.map((item, index) => cardMarkup(item, index, "flow")).join("");
+      swapCards = Array.from(swapStage.children);
+      flowCards = Array.from(flowStage.children);
+      swapIndex = Math.min(swapIndex, Math.max(0, reviews.length - 1));
+      flowIndex = Math.min(flowIndex, Math.max(0, reviews.length - 1));
+      renderSwap();
+      renderFlow();
+    }
+    buildDecks();
 
     function renderSwap() {
       swapCards.forEach((card, i) => {
@@ -1247,6 +1451,7 @@
       navMenu.hidden = !open;
       navMenuTrigger.setAttribute("aria-expanded", String(open));
       navMenuTrigger.querySelector("span:last-child").textContent = open ? "−" : "＋";
+      if (open) closeWorkspace();
     });
     navMenu.addEventListener("click", () => {
       navMenu.hidden = true;
@@ -1254,7 +1459,7 @@
       navMenuTrigger.querySelector("span:last-child").textContent = "＋";
     });
 
-    const categories = [...new Set(reviews.map((item) => item.c))];
+    let categories = [];
     const activeCategories = new Set();
     let activeVerdict = "all";
     let searchTerm = "";
@@ -1264,14 +1469,46 @@
     const reviewSearch = document.getElementById("review-search");
     const suggestions = document.getElementById("search-suggestions");
 
-    facetRow.innerHTML = categories.map((category) => `<button class="facet-btn" type="button" aria-pressed="false" data-category="${category}">${category}</button>`).join("");
+    function buildFacets() {
+      categories = [...new Set(reviews.map((item) => item.c))];
+      const counts = new Map();
+      reviews.forEach((item) => counts.set(item.c, (counts.get(item.c) || 0) + 1));
+      facetRow.innerHTML = categories.map((category) => `<button class="facet-btn" type="button" aria-pressed="false" data-category="${category}">${category} · ${counts.get(category) || 0}</button>`).join("")
+        + `<div class="marks-wrap" id="marks-wrap">
+          <button class="facet-btn marks-btn" id="marks-btn" type="button" aria-expanded="false" aria-controls="marks-pop" aria-pressed="false"><span class="marks-label">Marks</span></button>
+          <button class="marks-clear" id="marks-clear" type="button" hidden aria-label="Clear marks filter">×</button>
+          <div class="marks-pop" id="marks-pop" hidden>
+            <label class="mark-check"><input type="checkbox" id="mark-promoted" /><span>Promoted <span class="mark-count" id="mark-promoted-count">0</span></span></label>
+            <label class="mark-check"><input type="checkbox" id="mark-favorites" /><span>Favorites <span class="mark-count" id="mark-favorites-count">0</span></span></label>
+          </div>
+        </div>`;
+      const marksBtn = document.getElementById("marks-btn");
+      marksBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const pop = document.getElementById("marks-pop");
+        const open = pop.hidden;
+        closeProjectList();
+        closeActionMenus();
+        pop.hidden = !open;
+        marksBtn.setAttribute("aria-expanded", String(open));
+      });
+      document.getElementById("mark-promoted").addEventListener("change", (event) => setMarksFilter(event.target.checked, filterFavorites));
+      document.getElementById("mark-favorites").addEventListener("change", (event) => setMarksFilter(filterPromoted, event.target.checked));
+      document.getElementById("marks-clear").addEventListener("click", (event) => {
+        event.stopPropagation();
+        setMarksFilter(false, false);
+      });
+    }
+    buildFacets();
 
     function filteredReviews() {
-      return reviews.filter((item) => {
+      return reviews.filter((item, index) => {
         const verdictMatch = activeVerdict === "all" || item.v === activeVerdict;
         const categoryMatch = activeCategories.size === 0 || activeCategories.has(item.c);
+        const projectMatch = selectedProjects.size === 0 || (item.p !== "" && selectedProjects.has(item.p));
+        const marksMatch = (!filterPromoted || promotedIdx.has(index)) && (!filterFavorites || favoriteIdx.has(index));
         const haystack = `${item.t} ${item.c} ${item.p} ${item.w}`.toLowerCase();
-        return verdictMatch && categoryMatch && (!searchTerm || haystack.includes(searchTerm));
+        return verdictMatch && categoryMatch && projectMatch && marksMatch && (!searchTerm || haystack.includes(searchTerm));
       });
     }
 
@@ -1281,6 +1518,8 @@
 
     function renderResults() {
       const matches = filteredReviews();
+      updateStatPills();
+      updateMarksUI();
       resultCount.textContent = `${matches.length} ${matches.length === 1 ? "review" : "reviews"}`;
       document.getElementById("liquid-title").textContent = activeVerdict === "all" ? `${matches.length} matching reviews` : `${matches.length} marked ${activeVerdict}`;
       document.getElementById("liquid-copy").textContent = activeCategories.size ? `Filtered to ${[...activeCategories].join(", ")}.` : "No category filter is active.";
@@ -1290,15 +1529,25 @@
       }
       resultGrid.innerHTML = matches.slice(0, 9).map((item) => {
         const index = reviews.indexOf(item);
+        const laneName = (lane) => lane.charAt(0).toUpperCase() + lane.slice(1);
         return `<article class="result-card">
           <span class="verdict ${item.v}">${item.v}</span>
           <h3>${item.t}</h3>
           <p>${item.c}${item.p ? ` · ${item.p}` : ""}</p>
           <div class="result-actions">
             <button class="more-btn" type="button" aria-label="Actions for ${item.t}" aria-expanded="false">•••</button>
-            <div class="action-menu" hidden>
-              <button type="button" data-focus-card="${index}">View in Card Swap</button>
-              <a href="${item.u}" target="_blank" rel="noopener noreferrer">Open source ↗</a>
+            <div class="action-menu" role="menu" aria-label="Actions for ${item.t}" hidden>
+              <button type="button" role="menuitem" data-focus-card="${index}">View in Card Swap</button>
+              <a href="${item.u}" target="_blank" rel="noopener noreferrer" role="menuitem">Open source ↗</a>
+              <button type="button" role="menuitem" data-promote="${index}">${promotedIdx.has(index) ? "Unpromote" : "Promote"}</button>
+              <button type="button" role="menuitem" data-favorite="${index}">${favoriteIdx.has(index) ? "Unfavorite" : "Favorite"}</button>
+              <div class="action-sub">
+                <button type="button" data-submenu aria-haspopup="menu" aria-expanded="false"><span>Set lane</span><span aria-hidden="true">▸</span></button>
+                <div class="action-submenu" role="menu" aria-label="Set lane" hidden>
+                  ${["try", "parked", "skipped"].map((lane) => `<button type="button" role="menuitemradio" aria-checked="${item.v === lane}" data-set-lane="${lane}" data-index="${index}">${item.v === lane ? "✓ " : ""}${laneName(lane)}</button>`).join("")}
+                </div>
+              </div>
+              <button type="button" role="menuitem" data-copy="${index}">Copy link</button>
             </div>
           </div>
         </article>`;
@@ -1313,6 +1562,16 @@
           button.setAttribute("aria-expanded", String(opening));
         });
       });
+      resultGrid.querySelectorAll("[data-submenu]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const sub = button.nextElementSibling;
+          const open = sub.hidden;
+          sub.hidden = !open;
+          button.setAttribute("aria-expanded", String(open));
+          button.querySelector("span:last-child").textContent = open ? "▾" : "▸";
+        });
+      });
       resultGrid.querySelectorAll("[data-focus-card]").forEach((button) => {
         button.addEventListener("click", () => {
           swapIndex = Number(button.dataset.focusCard);
@@ -1320,14 +1579,46 @@
           jumpToSection("card-swap");
         });
       });
+      resultGrid.querySelectorAll("[data-promote]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = Number(button.dataset.promote);
+          promotedIdx.has(index) ? promotedIdx.delete(index) : promotedIdx.add(index);
+          renderResults();
+        });
+      });
+      resultGrid.querySelectorAll("[data-favorite]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = Number(button.dataset.favorite);
+          favoriteIdx.has(index) ? favoriteIdx.delete(index) : favoriteIdx.add(index);
+          renderResults();
+        });
+      });
+      resultGrid.querySelectorAll("[data-set-lane]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const item = reviews[Number(button.dataset.index)];
+          if (item) {
+            item.v = button.dataset.setLane;
+            buildDecks();
+            renderResults();
+            showToast(`Lane set to ${button.dataset.setLane}`);
+          }
+        });
+      });
+      resultGrid.querySelectorAll("[data-copy]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const item = reviews[Number(button.dataset.copy)];
+          if (item) copyText(item.u);
+        });
+      });
     }
 
+    function setVerdict(verdict) {
+      activeVerdict = verdict;
+      document.querySelectorAll(".tab-btn").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.verdict === verdict)));
+      renderResults();
+    }
     document.querySelectorAll(".tab-btn").forEach((button) => {
-      button.addEventListener("click", () => {
-        activeVerdict = button.dataset.verdict;
-        document.querySelectorAll(".tab-btn").forEach((tab) => tab.setAttribute("aria-selected", String(tab === button)));
-        renderResults();
-      });
+      button.addEventListener("click", () => setVerdict(button.dataset.verdict));
     });
     facetRow.addEventListener("click", (event) => {
       const button = event.target.closest(".facet-btn");
@@ -1359,28 +1650,40 @@
       suggestions.hidden = true;
       renderResults();
     });
-    document.getElementById("clear-filters").addEventListener("click", () => {
+    function clearAllFilters() {
       activeVerdict = "all";
       searchTerm = "";
       reviewSearch.value = "";
       activeCategories.clear();
+      selectedProjects.clear();
+      filterPromoted = false;
+      filterFavorites = false;
+      projectInput.value = "";
       document.querySelectorAll(".tab-btn").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.verdict === "all")));
       document.querySelectorAll(".facet-btn").forEach((button) => button.setAttribute("aria-pressed", "false"));
       suggestions.hidden = true;
+      closeProjectList();
+      closeMarksPop();
+      renderProjectChips();
+      renderProjectList();
       renderResults();
-    });
+    }
+    document.getElementById("clear-filters").addEventListener("click", clearAllFilters);
 
-    const grouped = categories.map((category) => ({ category, items: reviews.filter((item) => item.c === category).sort((a, b) => b.r - a.r) }));
-    const accordionList = document.getElementById("accordion-list");
-    accordionList.innerHTML = grouped.map((group, index) => `<div class="accordion-item">
-      <button class="accordion-trigger" type="button" aria-expanded="${index === 0}" aria-controls="accordion-${index}">
-        <strong>${group.category}</strong><span>${group.items.length} ${group.items.length === 1 ? "review" : "reviews"} · top ${group.items[0].r.toFixed(1)} ★</span><b aria-hidden="true">＋</b>
-      </button>
-      <div class="accordion-panel" id="accordion-${index}" ${index === 0 ? "" : "hidden"}>
-        ${group.items.slice(0, 3).map((item) => `<article class="digest-card"><span class="verdict ${item.v}">${item.v}</span><h4>${item.t}</h4><p>${item.w}</p></article>`).join("")}
-      </div>
-    </div>`).join("");
-    accordionList.addEventListener("click", (event) => {
+    function buildAccordion() {
+      const grouped = categories.map((category) => ({ category, items: reviews.filter((item) => item.c === category).sort((a, b) => b.r - a.r) }));
+      const accordionList = document.getElementById("accordion-list");
+      accordionList.innerHTML = grouped.map((group, index) => `<div class="accordion-item">
+        <button class="accordion-trigger" type="button" aria-expanded="${index === 0}" aria-controls="accordion-${index}">
+          <strong>${group.category}</strong><span>${group.items.length} ${group.items.length === 1 ? "review" : "reviews"} · top ${group.items[0].r.toFixed(1)} ★</span><b aria-hidden="true">＋</b>
+        </button>
+        <div class="accordion-panel" id="accordion-${index}" ${index === 0 ? "" : "hidden"}>
+          ${group.items.slice(0, 3).map((item) => `<article class="digest-card"><span class="verdict ${item.v}">${item.v}</span><h4>${item.t}</h4><p>${item.w}</p></article>`).join("")}
+        </div>
+      </div>`).join("");
+    }
+    buildAccordion();
+    document.getElementById("accordion-list").addEventListener("click", (event) => {
       const trigger = event.target.closest(".accordion-trigger");
       if (!trigger) return;
       const open = trigger.getAttribute("aria-expanded") !== "true";
@@ -1391,7 +1694,8 @@
     let queueItems = reviews.filter((item) => item.v === "try").sort((a, b) => b.r - a.r);
     const queueList = document.getElementById("queue-list");
     function renderQueue() {
-      queueList.innerHTML = queueItems.map((item, index) => `<li class="queue-item">
+      queueList.innerHTML = queueItems.map((item, index) => `<li class="queue-item" data-index="${index}">
+        <button class="queue-grip" type="button" draggable="true" aria-label="Reorder ${item.t}. Drag, or use arrow keys to move." title="Drag to reorder">⠿</button>
         <span class="queue-rank">${String(index + 1).padStart(2, "0")}</span>
         <div><strong>${item.t}</strong><span>${item.c} · ${item.r.toFixed(1)} ★</span></div>
         <div class="queue-movers">
@@ -1441,13 +1745,443 @@
     });
     document.addEventListener("click", (event) => {
       if (!event.target.closest(".combo-wrap")) suggestions.hidden = true;
+      if (!event.target.closest("#project-combo")) closeProjectList();
+      if (!event.target.closest("#marks-wrap")) closeMarksPop();
       if (!event.target.closest(".result-actions")) closeActionMenus();
       if (!event.target.closest(".section-nav")) {
         navMenu.hidden = true;
         navMenuTrigger.setAttribute("aria-expanded", "false");
         navMenuTrigger.querySelector("span:last-child").textContent = "＋";
+        closeWorkspace();
       }
     });
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      closeProjectList();
+      closeMarksPop();
+      closeActionMenus();
+      closeWorkspace();
+    });
+
+    /* ——— Harvest: GodUI keepers ———
+       Facet counts + Marks popover, project combobox, stat pills, workspace
+       menu (export/import/reset), queue drag-to-reorder, toast + copy helpers. */
+    const seedReviews = reviews.map((item) => ({ ...item }));
+    const promotedIdx = new Set();
+    const favoriteIdx = new Set();
+    const selectedProjects = new Set();
+    const pinnedProjects = new Set();
+    let filterPromoted = false;
+    let filterFavorites = false;
+
+    function escHtml(value) {
+      return String(value).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+    function highlightMatch(text, query) {
+      const safe = escHtml(text);
+      if (!query) return safe;
+      const idx = text.toLowerCase().indexOf(query);
+      if (idx < 0) return safe;
+      return escHtml(text.slice(0, idx)) + "<mark>" + escHtml(text.slice(idx, idx + query.length)) + "</mark>" + escHtml(text.slice(idx + query.length));
+    }
+
+    let toastTimer = 0;
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.hidden = false;
+      toast.classList.add("is-visible");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        toast.classList.remove("is-visible");
+        toast.hidden = true;
+      }, 2200);
+    }
+    function fallbackCopy(text) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;";
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
+      ta.remove();
+      return ok;
+    }
+    function copyText(text) {
+      const done = (ok) => showToast(ok ? "Link copied ✓" : "Copy failed — long-press the link instead");
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        navigator.clipboard.writeText(text).then(() => done(true)).catch(() => done(fallbackCopy(text)));
+      } else {
+        done(fallbackCopy(text));
+      }
+    }
+
+    /* Stat pills — live counts; verdict pills set the tab, marks pills toggle the marks filter. */
+    function updateStatPills() {
+      const counts = { try: 0, parked: 0, skipped: 0 };
+      reviews.forEach((item) => { if (counts[item.v] !== undefined) counts[item.v] += 1; });
+      const setCount = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = String(value); };
+      setCount("stat-reviewed", reviews.length);
+      setCount("stat-try", counts.try);
+      setCount("stat-parked", counts.parked);
+      setCount("stat-skipped", counts.skipped);
+      setCount("stat-promoted", promotedIdx.size);
+      setCount("stat-favorites", favoriteIdx.size);
+      document.querySelectorAll("[data-stat-verdict]").forEach((pill) => pill.setAttribute("aria-pressed", String(activeVerdict === pill.dataset.statVerdict)));
+      document.querySelectorAll("[data-stat-mark]").forEach((pill) => {
+        pill.setAttribute("aria-pressed", String(pill.dataset.statMark === "promoted" ? filterPromoted : filterFavorites));
+      });
+    }
+    document.querySelectorAll("[data-stat-verdict]").forEach((pill) => {
+      pill.addEventListener("click", () => setVerdict(pill.dataset.statVerdict));
+    });
+    document.querySelectorAll("[data-stat-mark]").forEach((pill) => {
+      pill.addEventListener("click", () => {
+        if (pill.dataset.statMark === "promoted") setMarksFilter(!filterPromoted, filterFavorites);
+        else setMarksFilter(filterPromoted, !filterFavorites);
+      });
+    });
+
+    /* Marks popover — two checkboxes driving the marks filter; × clears the filter. */
+    function setMarksFilter(promoted, favorites) {
+      filterPromoted = promoted;
+      filterFavorites = favorites;
+      renderResults();
+    }
+    function updateMarksUI() {
+      const promotedBox = document.getElementById("mark-promoted");
+      if (!promotedBox) return;
+      promotedBox.checked = filterPromoted;
+      document.getElementById("mark-favorites").checked = filterFavorites;
+      document.getElementById("mark-promoted-count").textContent = String(promotedIdx.size);
+      document.getElementById("mark-favorites-count").textContent = String(favoriteIdx.size);
+      const active = [];
+      if (filterPromoted) active.push("Promoted");
+      if (filterFavorites) active.push("Favorites");
+      const btn = document.getElementById("marks-btn");
+      btn.querySelector(".marks-label").textContent = active.length ? `Marks: ${active[0]}${active.length > 1 ? ` +${active.length - 1}` : ""}` : "Marks";
+      btn.setAttribute("aria-pressed", String(active.length > 0));
+      document.getElementById("marks-clear").hidden = active.length === 0;
+    }
+    function closeMarksPop() {
+      const pop = document.getElementById("marks-pop");
+      const btn = document.getElementById("marks-btn");
+      if (pop) pop.hidden = true;
+      if (btn) btn.setAttribute("aria-expanded", "false");
+    }
+
+    /* Project combobox — multi-select project picker with pin-to-top ordering. */
+    const projectInput = document.getElementById("project-input");
+    const projectList = document.getElementById("project-list");
+    const projectChips = document.getElementById("project-chips");
+    const pinTopToggle = document.getElementById("pin-top");
+
+    function projectNames() {
+      const seen = [];
+      reviews.forEach((item) => { if (item.p && !seen.includes(item.p)) seen.push(item.p); });
+      return seen;
+    }
+    function projectCounts() {
+      const map = new Map();
+      reviews.forEach((item) => { if (item.p) map.set(item.p, (map.get(item.p) || 0) + 1); });
+      return map;
+    }
+    function renderProjectList() {
+      const query = projectInput.value.trim().toLowerCase();
+      const counts = projectCounts();
+      let names = projectNames().filter((name) => !query || name.toLowerCase().includes(query));
+      if (pinTopToggle.checked) {
+        names = names.slice().sort((a, b) => Number(pinnedProjects.has(b)) - Number(pinnedProjects.has(a)));
+      }
+      projectList.innerHTML = names.length ? names.map((name) => `
+        <li class="proj-row">
+          <button type="button" class="proj-option" role="option" aria-selected="${selectedProjects.has(name)}" data-project="${escHtml(name)}">
+            <span class="proj-label">${highlightMatch(name, query)}</span>
+            <span class="proj-count">${counts.get(name) || 0}</span>
+          </button>
+          <button type="button" class="proj-pin" aria-pressed="${pinnedProjects.has(name)}" aria-label="${pinnedProjects.has(name) ? "Unpin" : "Pin"} ${escHtml(name)}" data-pin="${escHtml(name)}" title="${pinnedProjects.has(name) ? "Unpin from top" : "Pin to top"}">📍</button>
+        </li>`).join("") : `<li class="proj-empty">No matching projects</li>`;
+    }
+    function renderProjectChips() {
+      const names = [...selectedProjects];
+      projectChips.innerHTML = names.map((name) => `<span class="proj-chip">${escHtml(name)}<button type="button" class="chip-x" data-chip-remove="${escHtml(name)}" aria-label="Remove ${escHtml(name)} from project filter">×</button></span>`).join("");
+      projectChips.hidden = names.length === 0;
+    }
+    function toggleProject(name) {
+      if (selectedProjects.has(name)) selectedProjects.delete(name);
+      else selectedProjects.add(name);
+      renderProjectChips();
+      renderProjectList();
+      renderResults();
+    }
+    function openProjectList() {
+      projectList.hidden = false;
+      projectInput.setAttribute("aria-expanded", "true");
+    }
+    function closeProjectList() {
+      projectList.hidden = true;
+      projectInput.setAttribute("aria-expanded", "false");
+    }
+    projectInput.addEventListener("input", () => { openProjectList(); renderProjectList(); });
+    projectInput.addEventListener("focus", () => { openProjectList(); renderProjectList(); });
+    projectInput.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") { closeProjectList(); projectInput.blur(); }
+      else if (event.key === "ArrowDown" && !projectList.hidden) {
+        event.preventDefault();
+        const first = projectList.querySelector(".proj-option");
+        if (first) first.focus();
+      } else if (event.key === "Backspace" && !projectInput.value && selectedProjects.size) {
+        const names = [...selectedProjects];
+        selectedProjects.delete(names[names.length - 1]);
+        renderProjectChips();
+        renderProjectList();
+        renderResults();
+      }
+    });
+    projectList.addEventListener("click", (event) => {
+      const pin = event.target.closest("[data-pin]");
+      if (pin) {
+        const name = pin.dataset.pin;
+        if (pinnedProjects.has(name)) pinnedProjects.delete(name);
+        else pinnedProjects.add(name);
+        renderProjectList();
+        projectInput.focus();
+        return;
+      }
+      const opt = event.target.closest("[data-project]");
+      if (!opt) return;
+      toggleProject(opt.dataset.project);
+      projectInput.value = "";
+      renderProjectList();
+      projectInput.focus();
+    });
+    projectList.addEventListener("keydown", (event) => {
+      const options = [...projectList.querySelectorAll(".proj-option")];
+      const i = options.indexOf(document.activeElement);
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        (options[i + 1] || options[0] || projectInput).focus();
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        if (i <= 0) projectInput.focus();
+        else options[i - 1].focus();
+      } else if (event.key === "Escape") {
+        closeProjectList();
+        projectInput.focus();
+      }
+    });
+    projectChips.addEventListener("click", (event) => {
+      const x = event.target.closest("[data-chip-remove]");
+      if (!x) return;
+      selectedProjects.delete(x.dataset.chipRemove);
+      renderProjectChips();
+      renderProjectList();
+      renderResults();
+    });
+    pinTopToggle.addEventListener("change", renderProjectList);
+
+    /* Workspace menu — download / load / reset / clear. */
+    const workspaceTrigger = document.getElementById("workspace-trigger");
+    const workspaceMenu = document.getElementById("workspace-menu");
+    const workspaceFile = document.getElementById("workspace-file");
+    function setWorkspaceOpen(open) {
+      workspaceMenu.hidden = !open;
+      workspaceTrigger.setAttribute("aria-expanded", String(open));
+      workspaceTrigger.querySelector("span:last-child").textContent = open ? "−" : "＋";
+      if (open) {
+        const first = workspaceMenu.querySelector(".ws-item");
+        if (first) first.focus();
+      }
+    }
+    function closeWorkspace() {
+      if (!workspaceMenu.hidden) setWorkspaceOpen(false);
+    }
+    workspaceTrigger.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const open = workspaceMenu.hidden;
+      navMenu.hidden = true;
+      navMenuTrigger.setAttribute("aria-expanded", "false");
+      navMenuTrigger.querySelector("span:last-child").textContent = "＋";
+      setWorkspaceOpen(open);
+    });
+    workspaceMenu.addEventListener("click", (event) => {
+      const item = event.target.closest("[data-ws]");
+      if (!item) return;
+      const act = item.dataset.ws;
+      closeWorkspace();
+      if (act === "export") exportWorkspace();
+      else if (act === "import") workspaceFile.click();
+      else if (act === "reset") resetToSeed();
+      else if (act === "clear") clearAllFilters();
+    });
+    workspaceMenu.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") { closeWorkspace(); workspaceTrigger.focus(); }
+    });
+    function exportWorkspace() {
+      const data = {
+        exportedAt: new Date().toISOString(),
+        reviews: reviews,
+        queueOrder: queueItems.map((item) => item.t),
+        promoted: [...promotedIdx].map((i) => reviews[i] && reviews[i].t).filter(Boolean),
+        favorites: [...favoriteIdx].map((i) => reviews[i] && reviews[i].t).filter(Boolean)
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "linklabz-workspace.json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(link.href), 4000);
+      showToast("Workspace downloaded ✓");
+    }
+    function applyWorkspaceData(data) {
+      if (!data || !Array.isArray(data.reviews) || !data.reviews.length) {
+        showToast("That file has no reviews to load.");
+        return false;
+      }
+      const clean = [];
+      data.reviews.forEach((r) => {
+        if (!r || typeof r.t !== "string" || !r.t) return;
+        clean.push({
+          t: r.t,
+          u: typeof r.u === "string" ? r.u : "",
+          v: ["try", "parked", "skipped"].includes(r.v) ? r.v : "parked",
+          r: typeof r.r === "number" ? r.r : 0,
+          c: typeof r.c === "string" && r.c ? r.c : "Uncategorized",
+          p: typeof r.p === "string" ? r.p : "",
+          w: typeof r.w === "string" ? r.w : ""
+        });
+      });
+      if (!clean.length) {
+        showToast("That file has no reviews to load.");
+        return false;
+      }
+      reviews.length = 0;
+      clean.forEach((r) => reviews.push(r));
+      const order = Array.isArray(data.queueOrder) ? data.queueOrder : null;
+      if (order) {
+        const byTitle = new Map(reviews.map((r) => [r.t, r]));
+        const seen = new Set();
+        queueItems = [];
+        order.forEach((t) => {
+          const item = byTitle.get(t);
+          if (item && !seen.has(t)) { seen.add(t); queueItems.push(item); }
+        });
+      } else {
+        queueItems = reviews.filter((item) => item.v === "try").sort((a, b) => b.r - a.r);
+      }
+      promotedIdx.clear();
+      favoriteIdx.clear();
+      const promotedTitles = new Set(Array.isArray(data.promoted) ? data.promoted : []);
+      const favoriteTitles = new Set(Array.isArray(data.favorites) ? data.favorites : []);
+      reviews.forEach((r, i) => {
+        if (promotedTitles.has(r.t)) promotedIdx.add(i);
+        if (favoriteTitles.has(r.t)) favoriteIdx.add(i);
+      });
+      clearAllFilters();
+      buildFacets();
+      buildAccordion();
+      buildDecks();
+      renderQueue();
+      updateMarksUI();
+      updateStatPills();
+      return true;
+    }
+    function resetToSeed() {
+      applyWorkspaceData({
+        reviews: seedReviews.map((r) => ({ ...r })),
+        queueOrder: null,
+        promoted: [],
+        favorites: []
+      });
+      showToast("Workspace reset to seed.");
+    }
+    workspaceFile.addEventListener("change", () => {
+      const file = workspaceFile.files[0];
+      workspaceFile.value = "";
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          if (applyWorkspaceData(JSON.parse(reader.result))) showToast("Workspace loaded ✓");
+        } catch (_) {
+          showToast("Could not read that file.");
+        }
+      };
+      reader.onerror = () => showToast("Could not read that file.");
+      reader.readAsText(file);
+    });
+
+    /* Priority queue — HTML5 drag-to-reorder on the grip; up/down movers stay as fallback. */
+    let dragSrcIndex = null;
+    queueList.addEventListener("dragstart", (event) => {
+      const grip = event.target.closest(".queue-grip");
+      if (!grip) { event.preventDefault(); return; }
+      const item = grip.closest(".queue-item");
+      dragSrcIndex = Number(item.dataset.index);
+      event.dataTransfer.effectAllowed = "move";
+      try { event.dataTransfer.setData("text/plain", String(dragSrcIndex)); } catch (_) {}
+      item.classList.add("is-dragging");
+    });
+    queueList.addEventListener("dragover", (event) => {
+      if (dragSrcIndex === null) return;
+      const item = event.target.closest(".queue-item");
+      queueList.querySelectorAll(".drop-before, .drop-after").forEach((el) => el.classList.remove("drop-before", "drop-after"));
+      if (!item) return;
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+      const rect = item.getBoundingClientRect();
+      const after = (event.clientY - rect.top) > rect.height / 2;
+      item.classList.add(after ? "drop-after" : "drop-before");
+    });
+    queueList.addEventListener("dragleave", (event) => {
+      if (!queueList.contains(event.relatedTarget)) {
+        queueList.querySelectorAll(".drop-before, .drop-after").forEach((el) => el.classList.remove("drop-before", "drop-after"));
+      }
+    });
+    queueList.addEventListener("drop", (event) => {
+      if (dragSrcIndex === null) return;
+      const item = event.target.closest(".queue-item");
+      if (!item) { dragSrcIndex = null; return; }
+      event.preventDefault();
+      const from = dragSrcIndex;
+      const targetOrig = Number(item.dataset.index);
+      const rect = item.getBoundingClientRect();
+      const after = (event.clientY - rect.top) > rect.height / 2;
+      const [moved] = queueItems.splice(from, 1);
+      let to = targetOrig + (after ? 1 : 0);
+      if (to > from) to -= 1;
+      queueItems.splice(to, 0, moved);
+      dragSrcIndex = null;
+      renderQueue();
+    });
+    queueList.addEventListener("dragend", () => {
+      dragSrcIndex = null;
+      queueList.querySelectorAll(".is-dragging, .drop-before, .drop-after").forEach((el) => el.classList.remove("is-dragging", "drop-before", "drop-after"));
+    });
+    queueList.addEventListener("keydown", (event) => {
+      const grip = event.target.closest(".queue-grip");
+      if (!grip) return;
+      const index = Number(grip.closest(".queue-item").dataset.index);
+      let to = -1;
+      if (event.key === "ArrowUp") to = index - 1;
+      else if (event.key === "ArrowDown") to = index + 1;
+      else return;
+      event.preventDefault();
+      if (to < 0 || to >= queueItems.length) return;
+      [queueItems[index], queueItems[to]] = [queueItems[to], queueItems[index]];
+      renderQueue();
+      const moved = queueList.children[to];
+      if (moved) moved.querySelector(".queue-grip").focus();
+    });
+
+    renderProjectList();
+    renderProjectChips();
+    updateMarksUI();
+    updateStatPills();
 
     renderResults();
     renderQueue();
