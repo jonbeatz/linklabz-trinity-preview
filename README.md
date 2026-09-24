@@ -27,6 +27,11 @@
   top-bar search button.
 - **Refined slide-over drawer** — sticky footer action, blurred backdrop,
   Escape to close, bottom-sheet treatment on mobile.
+- **Gradients 12 + Gradient Lab** — a gallery of 12 tonal-neutral gradient cards
+  (palette ingredients inspired by `feralui.dev/gradients`) plus an interactive
+  lab: pick any gallery palette as the source, tune custom hexes, choose
+  linear/radial/conic, angle slider, shuffle, live preview, Copy CSS / Copy SVG /
+  Download SVG, and **Harvest to spitball** to park a gradient as an idea.
 - **Full dataset preserved** — 19 reviews, 7 bookmarks, 6 spitballs, 2 to-dos.
 
 ## Tech stack
@@ -45,9 +50,16 @@ linklabz-trinity-preview/
 ├── index.html          # the whole app — self-contained build
 ├── assets/
 │   └── screenshot.png  # README hero shot
+├── docs/
+│   └── CURSOR-BLUEPRINT.md  # living blueprint for Jon's future Cursor rebuild
 ├── .nojekyll           # tell Pages to serve files as-is
 └── README.md
 ```
+
+> 🧭 **Cursor rebuild blueprint:** [`docs/CURSOR-BLUEPRINT.md`](docs/CURSOR-BLUEPRINT.md)
+> is the starting point for Jon's future real rebuild on Vader — app map, data
+> model + persistence, real-vs-stubbed, wiring checklist, design tokens, and the
+> Cursor verification workflow. Living doc: updated with every repo revision.
 
 ## Workflow — branches, not overwrites
 
