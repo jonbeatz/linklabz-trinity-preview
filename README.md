@@ -11,7 +11,7 @@
 
 **🚀 Live preview:** https://jonbeatz.github.io/linklabz-trinity-preview/
 
-![LinkLabz preview](assets/screenshot.png)
+![LinkLabz preview](assets/screenshot.png?v=2)
 
 ## What's inside
 
