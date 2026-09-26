@@ -1508,6 +1508,35 @@ body::before {
       .top-nav, .managebar, .facet-popover, .command-palette, .drawer, .drawer-control-strip, .drawer-actions { background: rgba(28,28,28,.94); }
       .gradient-swatch { border-color: rgba(242,240,237,.14); }
       .hold-banner, .hold-stamp { color: var(--danger); }
+    /* ===== Raindrop section (Deckz pattern) ===== */
+    .rd-toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:18px 0 20px; }
+    .rd-toolbar .search-wrap { flex:1 1 240px; }
+    .rd-toolbar .select-wrap { flex:0 1 auto; }
+    .rd-count-line { color:var(--muted); font-size:13px; margin:0 0 4px; }
+    .raindrop-deck { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+    .raindrop-card { cursor:pointer; border-top:3px solid rgba(200,64,52,.62); transition:transform .18s ease, box-shadow .18s ease; }
+    .raindrop-card:hover, .raindrop-card:focus-visible { transform:translateY(-3px); box-shadow:var(--shadow); outline:none; }
+    .raindrop-card h3 { margin:10px 0 8px; font-size:18px; line-height:1.25; }
+    .rd-meta { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+    .rd-chip { display:inline-block; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:3px 9px; border-radius:999px; border:1px solid var(--line-strong); color:var(--muted); }
+    .rd-chip.lane { color:#f0d9a8; border-color:rgba(232,182,76,.45); }
+    .rd-chip.on-deck { color:#a9e6b8; border-color:rgba(120,200,140,.4); }
+    .rd-chip.lead { color:#f2b8b0; border-color:rgba(200,64,52,.5); }
+    .rd-stars { color:#e8b64c; letter-spacing:2px; font-size:13px; }
+    .rd-verdict { font-weight:700; font-size:13px; margin:8px 0 4px; }
+    .rd-why { margin:0; color:var(--muted); font-size:13px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .rd-src { font-size:12px; color:var(--muted); }
+    .rd-overlay { position:fixed; inset:0; z-index:120; background:rgba(8,8,10,.78); backdrop-filter:blur(6px); display:flex; align-items:flex-start; justify-content:center; padding:48px 16px; overflow-y:auto; }
+    .rd-overlay[hidden] { display:none; }
+    .rd-detail { width:min(760px,100%); background:var(--bg); border:1px solid var(--line-strong); border-radius:16px; padding:28px; box-shadow:var(--shadow); border-top:4px solid rgba(200,64,52,.7); }
+    .rd-detail-top { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:18px; }
+    .rd-detail-nav { display:flex; gap:8px; }
+    .rd-detail h2 { margin:6px 0 10px; font-size:26px; line-height:1.2; }
+    .rd-detail h4 { margin:20px 0 6px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+    .rd-detail p.body { margin:0; font-size:15px; line-height:1.6; }
+    .rd-links { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+    .rd-pos { font-size:12px; color:var(--muted); }
+
   </style>
 </head>
 <body>
@@ -1529,6 +1558,7 @@ body::before {
       <button class="workspace-tab" type="button" data-workspace="favorites">Favorites <span id="tab-favorites-count">0</span></button>
       <button class="workspace-tab" type="button" data-workspace="gradients">Gradients <span>12</span></button>
       <button class="workspace-tab" type="button" data-workspace="tools">Tools <span id="tab-tools-count">2</span></button>
+      <button class="workspace-tab" type="button" data-workspace="raindrop">Raindrop <span id="tab-raindrop-count">0</span></button>
     </nav>
   </header>
   <div class="nav-scrim" id="nav-scrim" aria-hidden="true"></div>
@@ -1676,8 +1706,25 @@ body::before {
         <section class="tool-panel wide"><h3>Activity</h3><p>Changes made during this visit. Download the workspace to keep them.</p><div class="activity-list" id="activity-list"></div></section>
       </div>
     </section>
+    <section class="workspace-panel" id="panel-raindrop" data-panel="raindrop" hidden>
+      <header class="utility-head"><div><h2>Raindrop</h2><p>Reviewed keepers from Jon's Raindrop sweeps — graded, with the harvestable patterns attached. New sweep batches append to this deck.</p></div></header>
+      <div class="rd-toolbar" aria-label="Raindrop filters">
+        <label class="search-wrap">
+          <span class="sr-only" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">Search Raindrop deck</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input class="search" id="rd-search" type="search" placeholder="Search title, verdict, or harvest notes…" autocomplete="off" />
+        </label>
+        <div class="select-wrap"><label class="sr-only" for="rd-lane">Filter by lane</label><select class="select-control" id="rd-lane"><option value="all">All lanes</option></select></div>
+        <div class="select-wrap"><label class="sr-only" for="rd-collection">Filter by source collection</label><select class="select-control" id="rd-collection"><option value="all">All collections</option></select></div>
+        <div class="select-wrap"><label class="sr-only" for="rd-status">Filter by status</label><select class="select-control" id="rd-status"><option value="all">Any status</option><option value="on-deck">On deck</option><option value="lead">Lead</option></select></div>
+        <div class="select-wrap"><label class="sr-only" for="rd-grade">Minimum grade</label><select class="select-control" id="rd-grade"><option value="0">Any grade</option><option value="5">★★★★★ 5</option><option value="4">★★★★+ 4</option><option value="3">★★★+ 3</option></select></div>
+      </div>
+      <p class="rd-count-line" id="rd-count-line"></p>
+      <div class="raindrop-deck" id="raindrop-deck"></div>
+    </section>
     <datalist id="project-vocabulary"></datalist>
   </main>
+    <div class="rd-overlay" id="rd-overlay" hidden><div class="rd-detail" id="rd-detail" role="dialog" aria-modal="true" aria-label="Raindrop card detail"></div></div>
 
   <div class="modal-backdrop command-backdrop" id="command-modal" role="presentation" aria-hidden="true">
     <section class="command-palette" role="dialog" aria-modal="true" aria-labelledby="command-heading">
@@ -3251,6 +3298,119 @@ DONE = install + Cursor connect + one prototype + export verified + verdict + re
         '</article>';
       }
 
+      /* ===== Raindrop section (Deckz pattern) ===== */
+      var RAINDROP_LANES = ["Divi 5", "WordPress Themes", "Next.js", "Video Lab", "Image Lab", "3D Lab", "Prompting", "General UI"];
+      /* Seed batch 1 -- "Divi Wordpress AI" sweep, 2026-09-26. Future sweep batches append objects here. */
+      var RAINDROP_CARDS = [
+        { title: "Respira \u2014 Divi MCP server with duplicate-first + 90-day undo", url: "https://www.respira.press/divi-mcp", repo_url: "", source_collection: "Divi Wordpress AI", lane: "Divi 5", grade: 5, status: "on-deck", date_added: "2026-09-26", verdict: "KEEP \u2014 biggest find in the folder", why: "Every edit lands on a copy first (approve inside WordPress), snapshot + rollback with 90-day undo. Directly answers the 'staging only, no undo' safety rule \u2014 solved at the tool level, not just workflow discipline.", harvest_notes: "Stealable pattern: duplicate-first + snapshot + time-boxed undo as a requirement for ANY lane-1 write path. 60+ Divi 5 module schemas, 13-point payload validation before write, auto-wraps bare modules in Section\u2192Row\u2192Column. Colors map to native et_global_colors. 7 days free, then \u20ac9/mo. Test plan exists in the Divi 5 lane notes." },
+        { title: "WordPress mcp-adapter \u2014 official Abilities API \u2192 MCP bridge", url: "https://github.com/wordpress/mcp-adapter", repo_url: "", source_collection: "Divi Wordpress AI", lane: "WordPress Themes", grade: 5, status: "on-deck", date_added: "2026-09-26", verdict: "KEEP \u2014 the long-term foundation", why: "Official WordPress.org 'AI Building Blocks' initiative. Any plugin/theme/core ability becomes an MCP tool, resource, or prompt. 1,764 stars, GPL-2.0, active. This is the floor everything else will stand on.", harvest_notes: "Stealable pattern: opt-in exposure \u2014 abilities are private by default, set meta.public/meta.mcp.public=true to expose. Three meta-tools: discover-abilities, get-ability-info, execute-ability. Any custom WP tooling Jon builds should expose abilities through this instead of a bespoke MCP server." },
+        { title: "DiviOps \u2014 free-tier Divi 5 AI harness (MCP server + WP plugin + skills)", url: "https://diviops.com/", repo_url: "https://github.com/oaris-dev/diviops", source_collection: "Divi Wordpress AI", lane: "Divi 5", grade: 4, status: "on-deck", date_added: "2026-09-26", verdict: "KEEP \u2014 strongest free Novamira alternative", why: "Free MCP server + WordPress plugin (also on WordPress.org) + divi-5-builder Claude skill. Free tier genuinely usable: core MCP tools + authoring skills, no card. Pro \u20ac29/49/99 per yr.", harvest_notes: "Stealable pattern: fail-closed workflow \u2014 validate_blocks \u2192 unpublished draft \u2192 render_preview \u2192 Visual Builder refine \u2192 publish. Validation before ANY write. Design-system tools (global colors/fonts/presets/variables) + SCF integration. FLAG: license is murky (README badge says MIT, GitHub metadata says NOASSERTION) \u2014 fine to test, verify before any client/commercial use. Public beta, 25 stars, active Sept 2026." },
+        { title: "Novamira Pro \u2014 purchase page (HustleWP)", url: "https://www.hustlewp.com/plugin/novamira-pro/", repo_url: "", source_collection: "Divi Wordpress AI", lane: "Divi 5", grade: 4, status: "on-deck", date_added: "2026-09-26", verdict: "KEEP \u2014 purchase/docs reference", why: "Already covered in the Divi 5 knowledge base (incl. Jefferson Maldonado's verdict: Pro worth it for serious Divi 5 work, free tier isn't). Jon already owns it. Kept as the buy/reference link.", harvest_notes: "No new harvest \u2014 reference only." },
+        { title: "Novamira Pro \u2014 MCP for Divi 5 docs", url: "https://novamira.ai/mcp/divi/", repo_url: "", source_collection: "Divi Wordpress AI", lane: "Divi 5", grade: 3, status: "on-deck", date_added: "2026-09-26", verdict: "KEEP \u2014 docs reference", why: "MCP docs for Novamira Pro: pages, modules, loops, dynamic content, theme builder over MCP. Already in the knowledge base.", harvest_notes: "No new harvest \u2014 docs reference only." }
+      ];
+      var rdFilters = { q: "", lane: "all", collection: "all", status: "all", minGrade: 0 };
+      var rdDetailList = [];
+      var rdDetailPos = -1;
+
+      function rdStars(g) { var s = ""; for (var i = 1; i <= 5; i++) s += i <= g ? "\u2605" : "\u2606"; return s; }
+      function rdFiltered() {
+        var q = rdFilters.q.toLowerCase();
+        return RAINDROP_CARDS.filter(function (c) {
+          if (rdFilters.lane !== "all" && c.lane !== rdFilters.lane) return false;
+          if (rdFilters.collection !== "all" && c.source_collection !== rdFilters.collection) return false;
+          if (rdFilters.status !== "all" && c.status !== rdFilters.status) return false;
+          if (c.grade < rdFilters.minGrade) return false;
+          if (q && (c.title + " " + c.verdict + " " + c.why + " " + c.harvest_notes).toLowerCase().indexOf(q) < 0) return false;
+          return true;
+        });
+      }
+      function rdCardHtml(c, i) {
+        return '<article class="utility-card raindrop-card" data-rd-open="' + i + '" tabindex="0" role="button" aria-label="Open ' + escapeHtml(c.title) + '">' +
+          '<div class="rd-meta"><span class="rd-chip lane">' + escapeHtml(c.lane) + '</span>' +
+          '<span class="rd-chip ' + c.status + '">' + escapeHtml(c.status) + '</span>' +
+          '<span class="rd-stars" aria-label="' + c.grade + ' of 5 stars">' + rdStars(c.grade) + '</span></div>' +
+          '<h3>' + escapeHtml(c.title) + '</h3>' +
+          '<p class="rd-verdict">' + escapeHtml(c.verdict) + '</p>' +
+          '<p class="rd-why">' + escapeHtml(c.why) + '</p>' +
+          '<div class="utility-actions"><span class="rd-src">' + escapeHtml(c.source_collection) + ' \u00b7 ' + escapeHtml(c.date_added) + '</span></div></article>';
+      }
+      function renderRaindrop() {
+        var deck = document.getElementById("raindrop-deck");
+        if (!deck) return;
+        var laneSel = document.getElementById("rd-lane");
+        if (laneSel.options.length <= 1) RAINDROP_LANES.forEach(function (l) { var o = document.createElement("option"); o.value = l; o.textContent = l; laneSel.appendChild(o); });
+        var colSel = document.getElementById("rd-collection");
+        var cols = [];
+        RAINDROP_CARDS.forEach(function (c) { if (cols.indexOf(c.source_collection) < 0) cols.push(c.source_collection); });
+        var keep = colSel.value;
+        colSel.innerHTML = '<option value="all">All collections</option>';
+        cols.forEach(function (c) { var o = document.createElement("option"); o.value = c; o.textContent = c; colSel.appendChild(o); });
+        colSel.value = cols.indexOf(keep) >= 0 ? keep : "all";
+        rdFilters.collection = colSel.value;
+        var list = rdFiltered();
+        document.getElementById("tab-raindrop-count").textContent = RAINDROP_CARDS.length;
+        document.getElementById("rd-count-line").textContent = list.length + " of " + RAINDROP_CARDS.length + " keepers on deck";
+        deck.innerHTML = list.length ? list.map(function (c) { return rdCardHtml(c, RAINDROP_CARDS.indexOf(c)); }).join("") :
+          '<div class="empty-shelf"><strong>Nothing matches.</strong><p>Loosen a filter to see the deck again.</p></div>';
+      }
+      function openRaindropDetail(cardIdx) {
+        rdDetailList = rdFiltered();
+        rdDetailPos = rdDetailList.indexOf(RAINDROP_CARDS[cardIdx]);
+        if (rdDetailPos < 0) rdDetailPos = 0;
+        renderRaindropDetail();
+        document.getElementById("rd-overlay").hidden = false;
+        document.body.style.overflow = "hidden";
+      }
+      function renderRaindropDetail() {
+        var c = rdDetailList[rdDetailPos];
+        var box = document.getElementById("rd-detail");
+        var links = '<a class="manage-btn primary" href="' + escapeHtml(c.url) + '" target="_blank" rel="noopener noreferrer">Open link \u2197</a>';
+        if (c.repo_url) links += '<a class="manage-btn" href="' + escapeHtml(c.repo_url) + '" target="_blank" rel="noopener noreferrer">Repo \u2197</a>';
+        box.innerHTML =
+          '<div class="rd-detail-top"><button class="manage-btn" type="button" data-rd-home>\u2190 Deck</button>' +
+          '<div class="rd-detail-nav"><span class="rd-pos">' + (rdDetailPos + 1) + ' / ' + rdDetailList.length + '</span>' +
+          '<button class="manage-btn" type="button" data-rd-prev' + (rdDetailPos <= 0 ? ' disabled' : '') + '>\u2190 Prev</button>' +
+          '<button class="manage-btn" type="button" data-rd-next' + (rdDetailPos >= rdDetailList.length - 1 ? ' disabled' : '') + '>Next \u2192</button></div></div>' +
+          '<div class="rd-meta"><span class="rd-chip lane">' + escapeHtml(c.lane) + '</span>' +
+          '<span class="rd-chip ' + c.status + '">' + escapeHtml(c.status) + '</span>' +
+          '<span class="rd-stars">' + rdStars(c.grade) + '</span>' +
+          '<span class="rd-src">' + escapeHtml(c.source_collection) + ' \u00b7 ' + escapeHtml(c.date_added) + '</span></div>' +
+          '<h2>' + escapeHtml(c.title) + '</h2>' +
+          '<p class="rd-verdict">' + escapeHtml(c.verdict) + '</p>' +
+          '<h4>Why it made the board</h4><p class="body">' + escapeHtml(c.why) + '</p>' +
+          '<h4>Harvest notes</h4><p class="body">' + escapeHtml(c.harvest_notes) + '</p>' +
+          '<div class="rd-links">' + links + '</div>';
+      }
+      function closeRaindropDetail() {
+        document.getElementById("rd-overlay").hidden = true;
+        document.body.style.overflow = "";
+        rdDetailPos = -1;
+      }
+      function initRaindrop() {
+        var bind = function (id, evt, fn) { var el = document.getElementById(id); if (el) el.addEventListener(evt, fn); };
+        bind("rd-search", "input", function (e) { rdFilters.q = e.target.value.trim(); closeRaindropDetail(); renderRaindrop(); });
+        bind("rd-lane", "change", function (e) { rdFilters.lane = e.target.value; closeRaindropDetail(); renderRaindrop(); });
+        bind("rd-collection", "change", function (e) { rdFilters.collection = e.target.value; closeRaindropDetail(); renderRaindrop(); });
+        bind("rd-status", "change", function (e) { rdFilters.status = e.target.value; closeRaindropDetail(); renderRaindrop(); });
+        bind("rd-grade", "change", function (e) { rdFilters.minGrade = parseInt(e.target.value, 10) || 0; closeRaindropDetail(); renderRaindrop(); });
+        document.addEventListener("click", function (e) {
+          var opener = e.target.closest("[data-rd-open]");
+          if (opener) { openRaindropDetail(parseInt(opener.getAttribute("data-rd-open"), 10)); return; }
+          if (e.target.closest("[data-rd-home]")) { closeRaindropDetail(); return; }
+          if (e.target.closest("[data-rd-prev]") && rdDetailPos > 0) { rdDetailPos--; renderRaindropDetail(); return; }
+          if (e.target.closest("[data-rd-next]") && rdDetailPos < rdDetailList.length - 1) { rdDetailPos++; renderRaindropDetail(); return; }
+          if (e.target.id === "rd-overlay") { closeRaindropDetail(); return; }
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" && e.target.matches && e.target.matches("[data-rd-open]")) { openRaindropDetail(parseInt(e.target.getAttribute("data-rd-open"), 10)); }
+          if (e.key === "Escape" && !document.getElementById("rd-overlay").hidden) { closeRaindropDetail(); }
+          if (rdDetailPos >= 0 && !document.getElementById("rd-overlay").hidden) {
+            if (e.key === "ArrowLeft" && rdDetailPos > 0) { rdDetailPos--; renderRaindropDetail(); }
+            if (e.key === "ArrowRight" && rdDetailPos < rdDetailList.length - 1) { rdDetailPos++; renderRaindropDetail(); }
+          }
+        });
+      }
+
       function renderUtilities() {
         document.getElementById("bookmark-list").innerHTML = bookmarks.length ? bookmarks.map(function (item, i) { return utilityCardHtml(item, "bookmark", i); }).join("") : '<div class="empty-shelf"><strong>No bookmarks yet.</strong><p>Save a useful link here without running a full review.</p><button class="empty-action" type="button" data-empty-add="bookmark">Add this link</button></div>';
         document.getElementById("spitball-list").innerHTML = spitballs.length ? spitballs.map(function (item, i) { return utilityCardHtml(item, "spitball", i); }).join("") : '<div class="empty-shelf"><strong>No spitballs yet.</strong><p>Capture a raw idea now and decide what it becomes later.</p><button class="empty-action" type="button" data-empty-add="spitball">Capture an idea</button></div>';
@@ -3265,6 +3425,7 @@ DONE = install + Cursor connect + one prototype + export verified + verdict + re
         document.getElementById("tab-spitballs-count").textContent = spitballs.length;
         document.getElementById("tab-todos-count").textContent = todos.filter(function (item) { return !item.done; }).length;
         document.getElementById("tab-favorites-count").textContent = favorites.length;
+        renderRaindrop();
         renderTools();
       }
 
@@ -3306,7 +3467,7 @@ DONE = install + Cursor connect + one prototype + export verified + verdict + re
         if (currentReview) {
           ["inbox", "try", "parked", "skipped"].forEach(function (lane) { entries.push({ id: "drawer-lane-" + lane, label: "Set open card to " + labels[lane], meta: currentReview.title, kind: "Set lane", icon: "→", run: function () { if(currentReview.hold){showToast("HOLD blocks lane changes until the grant email is reviewed.");return;} currentReview.verdict = lane; currentReview.inboxVerdict=lane==="inbox"?"unreviewed":"triaged"; touch(currentReview); render(); markDirty("Lane changed",currentReview.title+" → "+labels[lane]); openModal(currentReview.id, document.getElementById("command-trigger")); } }); });
         }
-        ["reviews", "bookmarks", "spitballs", "todos", "favorites", "gradients", "tools"].forEach(function (name) {
+        ["reviews", "bookmarks", "spitballs", "todos", "favorites", "gradients", "tools", "raindrop"].forEach(function (name) {
           entries.push({ id: "view-" + name, label: "Open " + (name === "todos" ? "To-do" : name.charAt(0).toUpperCase() + name.slice(1)), meta: "Jump to this workspace section", kind: "View", icon: "→", run: function () { showWorkspace(name); } });
         });
         reviews.forEach(function (item) {
@@ -4009,6 +4170,7 @@ DONE = install + Cursor connect + one prototype + export verified + verdict + re
       });
 
       window.addEventListener("beforeunload", function (event) { if (!dirty) return; event.preventDefault(); event.returnValue = ""; });
+      initRaindrop();
       updateCategoryOptions();
       refreshVocabulary();
       render();
